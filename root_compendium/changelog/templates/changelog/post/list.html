@@ -1,0 +1,18 @@
+{% extends "changelog/base.html" %}
+{% block title %}Changelog{% endblock %}
+{% block content %}
+  <div class="wrapper">
+    <h1>Changelog</h1>
+    {% for post in posts %}
+      <h2>
+        <a href="{% url 'changelog:post_detail' post.id %}">
+          {{ post.title }}
+        </a>
+      </h2>
+      {{ post.body|truncatewords:30|linebreaks }}
+      <p class="date">
+        Published {{ post.publish }} by {{ post.author }}
+      </p>
+  </div>
+  {% endfor %}
+{% endblock %}

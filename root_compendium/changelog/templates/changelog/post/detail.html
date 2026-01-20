@@ -1,0 +1,12 @@
+{% extends "changelog/base.html" %}
+{% block title %}{{ post.title }}{% endblock %}
+{% block content %}
+  <div class="wrapper">
+    <h1>{{ post.title }}</h1>
+    {{ post.body|linebreaks }}
+      <p class="date">
+      Published {{ post.publish }} by {{ post.author }}
+    </p>
+    <a href="{{request.META.HTTP_REFERER|escape}}">Back</a>
+  </div>
+{% endblock %}

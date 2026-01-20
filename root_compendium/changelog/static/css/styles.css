@@ -1,0 +1,22 @@
+h1 {
+    font-weight: bold;
+    font-size: 3em;
+}
+
+a {
+    display: inline-block;
+    color: rgb(0, 45, 75);
+    text-decoration: none;
+    transition: transform 0.25s ease-in, -webkit-text-stroke 0.25s ease-in;
+}
+
+a:hover {
+    transform: scale(1.05);
+    -webkit-text-stroke: 0.1px #FFF;
+}
+
+.wrapper {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
