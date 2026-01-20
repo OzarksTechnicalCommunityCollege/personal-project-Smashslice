@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import Post
 
-# Register your models here.
+# Render posts on admin page for post creation and editing
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
     list_display = ['title', 'slug', 'author', 'publish', 'status']

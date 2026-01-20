@@ -2,8 +2,7 @@ from django.conf import settings
 from django.db import models
 from django.utils import timezone
 
-# Create your models here.
-
+# Manager for handling post status
 class PublishedManager(models.Manager):
     def get_queryset(self):
         return (
@@ -11,9 +10,14 @@ class PublishedManager(models.Manager):
         )
 
 class Post(models.Model):
+
+    #Properties
+
+    # Subclass for handling Status
     class Status(models.TextChoices):
         DRAFT = 'DF', 'Draft'
         PUBLISHED = 'PB', 'Published'
+
     title = models.CharField(max_length=250)
     slug = models.SlugField(max_length=250)
     body = models.TextField()
@@ -31,14 +35,17 @@ class Post(models.Model):
         default=Status.DRAFT
     )
     
+
     objects = models.Manager()
     published = PublishedManager()
 
+    # Meta rule for handling sorting
     class Meta:
         ordering = ['-publish']
         indexes = [
             models.Index(fields=['-publish']),
         ]
     
+# String function
 def __str__(self):
     return self.title

@@ -3,6 +3,7 @@ from .models import Post
 from django.http import Http404
 # Create your views here.
 
+# Render post list
 def post_list(request):
     posts = Post.published.all()
     
@@ -12,6 +13,7 @@ def post_list(request):
         {'posts': posts}
     )
     
+# Render indivdual post details
 def post_detail(request, id):
     post = get_object_or_404(
         Post,
