@@ -1,9 +1,9 @@
 from django.contrib import admin
-from .models import Post
+from .models import Update
 
-# Render posts on admin page for post creation and editing
-@admin.register(Post)
-class PostAdmin(admin.ModelAdmin):
+# Render updates on admin page for update creation and editing
+@admin.register(Update)
+class UpdateAdmin(admin.ModelAdmin):
     list_display = ['title', 'slug', 'author', 'publish', 'status']
     list_filter = ['status', 'created', 'publish', 'author']
     search_fields = ['title', 'body']

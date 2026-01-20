@@ -6,10 +6,10 @@ from django.utils import timezone
 class PublishedManager(models.Manager):
     def get_queryset(self):
         return (
-            super().get_queryset().filter(status=Post.Status.PUBLISHED)
+            super().get_queryset().filter(status=Update.Status.PUBLISHED)
         )
 
-class Post(models.Model):
+class Update(models.Model):
 
     #Properties
 
@@ -17,18 +17,39 @@ class Post(models.Model):
     class Status(models.TextChoices):
         DRAFT = 'DF', 'Draft'
         PUBLISHED = 'PB', 'Published'
+        ROLLBACK = 'RB', 'Rolled Back'
 
     title = models.CharField(max_length=250)
     slug = models.SlugField(max_length=250)
     body = models.TextField()
+
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name='blog_posts'
+        related_name='updates'
     )
+    
     publish = models.DateTimeField(default=timezone.now)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+    
+    version = models.CharField(max_length=10)
+
+    # For if a post is posted VIA pipeline automation 
+    automated_post = models.BooleanField(default=False)
+
+    # List of change types for use in automatic versioning later on
+    CHANGE_TYPES = [
+        ('M', 'Major'),
+        ('F', 'Feature'),
+        ('W', 'Weekly'),
+        ('B', 'Bug'),
+        ('O', 'Other')
+    ]
+
+    # Keep track of the change type for this log post
+    change_type = models.CharField(max_length=7, choices=CHANGE_TYPES, default='Other')
+
     status = models.CharField(
         max_length=2,
         choices=Status,

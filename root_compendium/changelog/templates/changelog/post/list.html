@@ -1,20 +1,20 @@
-{% comment %} List view of posts {% endcomment %}
-
 {% extends "changelog/base.html" %}
 {% block title %}Changelog{% endblock %}
 {% block content %}
-  <div class="wrapper">
+
     <h1>Changelog</h1>
-    {% for post in posts %}
+    {% for update in updates %}
+      <div class="wrapper">
       <h2>
-        <a href="{% url 'changelog:post_detail' post.id %}">
-          {{ post.title }}
+        <a href="{% url 'changelog:update_detail' update.id %}">
+          {{ update.title }} - {{ update.version }}
         </a>
       </h2>
-      {{ post.body|truncatewords:30|linebreaks }}
+      {{ update.body|truncatewords:30|linebreaks }}
       <p class="date">
-        Published {{ post.publish }} by {{ post.author }}
+        Published {{ update.publish }} by {{ update.author }}
       </p>
+      <p>Update Type: {{ update.change_type }} - Automated update: {{ update.automated_update }}</p>
   </div>
   {% endfor %}
 {% endblock %}
