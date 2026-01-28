@@ -14,10 +14,12 @@ def update_list(request):
     )
     
 # Render indivdual post details
-def update_detail(request, id):
+def update_detail(request, major_version, current_patch, bug_fix):
     update = get_object_or_404(
         Update,
-        id=id,
+        major_version=major_version,
+        current_patch=current_patch,
+        bug_fix=bug_fix,
         status=Update.Status.PUBLISHED
     )
     return render(

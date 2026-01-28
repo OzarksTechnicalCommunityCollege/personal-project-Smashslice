@@ -6,7 +6,7 @@
     {% for update in updates %}
       <div class="wrapper">
       <h2>
-        <a href="{% url 'changelog:update_detail' update.id %}">
+        <a href="{% url 'changelog:update_detail' update.major_version update.current_patch update.bug_fix %}">
           {{ update.title }} - {{ update.version }}
         </a>
       </h2>

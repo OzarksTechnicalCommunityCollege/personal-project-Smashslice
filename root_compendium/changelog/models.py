@@ -27,8 +27,8 @@ class Update(models.Model):
     updated = models.DateTimeField(auto_now=True)
     objects = models.Manager()
     published = PublishedManager()
-    major_version = models.IntegerField(max_length=3)
-    current_patch = models.IntegerField(max_length=3)
+    major_version = models.IntegerField()
+    current_patch = models.IntegerField()
     bug_fix = models.CharField(max_length=1)
     automated_post = models.BooleanField(default=False)
 
@@ -63,3 +63,9 @@ class Update(models.Model):
         
     def __str__(self):
         return self.title
+    
+    # Kind of like def string, we are defining a property that is a return, because we want it to be a formatted string that is a combination of other existing properties.
+    @property
+    def version(self):
+        """Returns formatted version string like 1.2a"""
+        return f"{self.major_version}.{self.current_patch}{self.bug_fix}"
