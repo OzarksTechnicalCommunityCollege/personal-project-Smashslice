@@ -16,9 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView # Import for setting an entry point
 
 urlpatterns = [
+    # Creates an entry point for our site, picking changelog/home for now, though as the project grows this may become its own app depending on needs
     path('', TemplateView.as_view(template_name='changelog/home.html'), name='home'),
     path('admin/', admin.site.urls),
     path('changelog/', include('changelog.urls',namespace='changelog'))
