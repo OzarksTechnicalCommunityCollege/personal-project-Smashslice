@@ -1,15 +1,21 @@
 {% extends "changelog/base.html" %}
 {% block title %}{{ update.title }}{% endblock %}
 {% block content %}
-  <div class="wrapper">
-    <h1>{{ update.title }} - {{ update.version }}</h1>
-    <h2>{{ update.change_type }} Automated update: {{ update.automated_update }}</h2>
-    {{ update.body|linebreaks }}
+  <div class="detail-container">
+    <div class="detail-header">
+      <h1>{{ update.title }} - {{ update.version }}</h1>
+    </div>
+    
+    <div class="detail-card">
+      <h2>{{ update.change_type }} - Automated update: {{ update.automated_update }}</h2>
+      {{ update.body|linebreaks }}
       <p class="date">
-      Published {{ update.publish }} by {{ update.author }}
-    </p>
-    <!-- References the previous page to create a back button -->
-    <!-- SRC: Stack Overflow -->
-    <a href="{{request.META.HTTP_REFERER|escape}}">Back</a>
+        Published {{ update.publish }} by {{ update.author }}
+      </p>
+      
+      <div class="button-container">
+        <a href="{{request.META.HTTP_REFERER|escape}}" class="back-button">Back</a>
+      </div>
+    </div>
   </div>
 {% endblock %}

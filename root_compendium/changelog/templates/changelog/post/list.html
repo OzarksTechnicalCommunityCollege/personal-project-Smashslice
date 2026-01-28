@@ -2,19 +2,42 @@
 {% block title %}Changelog{% endblock %}
 {% block content %}
 
-    <h1>Changelog</h1>
+<div class="page-container">
+  <!-- Changelog Section -->
+  <section class="changelog-section">
+    <div class="section-header changelog-header">
+      <h2>Changelog</h2>
+    </div>
+    
     {% for update in updates %}
-      <div class="wrapper">
-      <h2>
-        <a href="{% url 'changelog:update_detail' update.major_version update.current_patch update.bug_fix %}">
-          {{ update.title }} - {{ update.version }}
-        </a>
-      </h2>
-      {{ update.body|truncatewords:30|linebreaks }}
-      <p class="date">
-        Published {{ update.publish }} by {{ update.author }}
-      </p>
-      <p>Update Type: {{ update.change_type }} - Automated update: {{ update.automated_update }}</p>
-  </div>
-  {% endfor %}
+      <div class="update-card">
+        <h3>
+          <a href="{% url 'changelog:update_detail' update.major_version update.current_patch update.bug_fix %}">
+            {{ update.title }} - {{ update.version }}
+          </a>
+        </h3>
+        {{ update.body|truncatewords:30|linebreaks }}
+        <p class="date">
+          Published {{ update.publish }} by {{ update.author }}
+        </p>
+        <p>Update Type: {{ update.change_type }} - Automated update: {{ update.automated_update }}</p>
+      </div>
+    {% endfor %}
+  </section>
+  
+  <!-- Todo List Section -->
+  <aside class="todo-section">
+    <div class="section-header todo-header">
+      <h2>To Do List</h2>
+    </div>
+  </aside>
+  
+  <!-- Requested Changes Section -->
+  <aside class="changes-section">
+    <div class="section-header changes-header">
+      <h2>Requested Changes</h2>
+    </div>
+  </aside>
+</div>
+
 {% endblock %}

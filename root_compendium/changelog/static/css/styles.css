@@ -1,5 +1,33 @@
 /* Changelog main CSS file */
 
+/* ====================================
+   CSS Variables
+   ==================================== */
+:root {
+    /* Colors */
+    --deep-green: #1e3a1a;
+    --dark-grey: #3a3a3a;
+    --dark-oak-brown: #3e2723;
+    --sunflower-yellow: #ffd54f;
+    --text-light: #ffffff;
+    --text-dark: #333333;
+    
+    /* Spacing */
+    --card-spacing: 2.5rem;
+    --card-padding: 1.5rem;
+    
+    /* Border radius */
+    --border-radius: 16px;
+    --border-width: 2px;
+    
+    /* Shadows - Enhanced for floating effect */
+    --shadow-base: 0 8px 20px rgba(0, 0, 0, 0.15), 0 4px 8px rgba(0, 0, 0, 0.1);
+    --shadow-hover: 0 16px 32px rgba(0, 0, 0, 0.25), 0 8px 16px rgba(0, 0, 0, 0.15);
+    
+    /* Transitions */
+    --transition-speed: 0.3s;
+}
+
 h1 {
     font-weight: bold;
     font-size: 3em;
@@ -138,4 +166,254 @@ body {
     .site-header {
         padding: 1rem;
     }
+}
+
+/* ====================================
+   Page Layout - Three Column Design
+   ==================================== */
+
+.page-container {
+    display: flex;
+    gap: var(--card-spacing);
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: var(--card-spacing);
+    align-items: flex-start;
+}
+
+.changelog-section {
+    flex: 0 0 60%;
+}
+
+.todo-section,
+.changes-section {
+    flex: 0 0 20%;
+}
+
+/* ====================================
+   Section Headers
+   ==================================== */
+
+.section-header {
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    margin-bottom: var(--card-spacing);
+    border: var(--border-width) solid var(--dark-grey);
+    text-align: center;
+    box-shadow: var(--shadow-base);
+    transform: translateY(-3px);
+    position: relative;
+}
+
+.section-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: var(--text-light);
+}
+
+.changelog-header {
+    background-color: var(--deep-green);
+}
+
+.todo-header {
+    background-color: var(--dark-oak-brown);
+}
+
+.changes-header {
+    background-color: var(--sunflower-yellow);
+}
+
+.changes-header h2 {
+    color: var(--text-dark);
+}
+
+/* ====================================
+   Card Styles with Hover Effects
+   ==================================== */
+
+.update-card,
+.todo-card,
+.changes-card {
+    border-radius: var(--border-radius);
+    padding: var(--card-padding);
+    margin-bottom: var(--card-spacing);
+    border: var(--border-width) solid var(--dark-grey);
+    transition: transform var(--transition-speed) ease, 
+                box-shadow var(--transition-speed) ease,
+                border-color var(--transition-speed) ease;
+    box-shadow: var(--shadow-base);
+    cursor: pointer;
+    transform: translateY(-3px);
+    position: relative;
+}
+
+.update-card:hover,
+.todo-card:hover,
+.changes-card:hover {
+    transform: translateY(-10px) scale(1.01);
+    box-shadow: var(--shadow-hover);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Changelog Cards */
+.update-card {
+    background-color: var(--deep-green);
+    color: var(--text-light);
+}
+
+.update-card h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.update-card a {
+    color: #90ee90;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.update-card a:hover {
+    color: #b4ffb4;
+    -webkit-text-stroke: 0;
+}
+
+.update-card .date {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin-top: 1rem;
+    font-style: italic;
+}
+
+.update-card p {
+    line-height: 1.6;
+    margin-bottom: 0.5rem;
+}
+
+/* Todo Cards */
+.todo-card {
+    background-color: var(--dark-oak-brown);
+    color: var(--text-light);
+    min-height: 80px;
+}
+
+.todo-card p {
+    margin: 0;
+    line-height: 1.6;
+}
+
+/* Requested Changes Cards */
+.changes-card {
+    background-color: var(--sunflower-yellow);
+    color: var(--text-dark);
+    min-height: 80px;
+}
+
+.changes-card p {
+    margin: 0;
+    line-height: 1.6;
+}
+
+/* ====================================
+   Responsive Layout
+   ==================================== */
+
+@media (max-width: 1024px) {
+    .page-container {
+        flex-direction: column;
+    }
+    
+    .changelog-section,
+    .todo-section,
+    .changes-section {
+        flex: 1 1 100%;
+        width: 100%;
+    }
+}
+
+/* ====================================
+   Detail Page Styles
+   ==================================== */
+
+.detail-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: var(--card-spacing);
+}
+
+.detail-header {
+    background-color: var(--deep-green);
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    margin-bottom: var(--card-spacing);
+    border: var(--border-width) solid var(--dark-grey);
+    text-align: left;
+    box-shadow: var(--shadow-base);
+    transform: translateY(-3px);
+    position: relative;
+}
+
+.detail-header h1 {
+    margin: 0;
+    color: var(--text-light);
+    font-size: 2rem;
+}
+
+.detail-card {
+    background-color: var(--deep-green);
+    color: var(--text-light);
+    border-radius: var(--border-radius);
+    padding: var(--card-padding);
+    border: var(--border-width) solid var(--dark-grey);
+    box-shadow: var(--shadow-base);
+    transform: translateY(-3px);
+    position: relative;
+}
+
+.detail-card h2 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    color: #90ee90;
+    font-size: 1.3rem;
+}
+
+.detail-card p {
+    line-height: 1.8;
+    margin-bottom: 1rem;
+}
+
+.detail-card .date {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    font-style: italic;
+}
+
+.button-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 2rem;
+}
+
+.back-button {
+    display: inline-block;
+    padding: 0.75rem 2rem;
+    background-color: transparent;
+    color: var(--text-light);
+    border: var(--border-width) solid var(--sunflower-yellow);
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all var(--transition-speed) ease;
+    cursor: pointer;
+    -webkit-text-stroke: 0;
+}
+
+.back-button:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 8px 20px rgba(255, 213, 79, 0.4);
+    background-color: rgba(255, 213, 79, 0.1);
+    border-color: var(--sunflower-yellow);
 }
