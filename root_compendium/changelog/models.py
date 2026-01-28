@@ -26,7 +26,7 @@ class Update(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     objects = models.Manager()
-    published = PublishedManager
+    published = PublishedManager()
     major_version = models.CharField(max_length=3)
     current_patch = models.CharField(max_length=3)
     bug_fix = models.CharField(max_length=1)

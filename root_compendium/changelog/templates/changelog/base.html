@@ -6,24 +6,7 @@
   <link href="{% static "css/styles.css" %}" rel="stylesheet">
 </head>
 <body>
-  <header class="site-header">
-    <div class="header-container">
-      <div class="header-left">
-        <div class="logo-placeholder">
-          <!-- Left logo/text placeholder -->
-        </div>
-      </div>
-      <div class="header-middle">
-        <div class="logo-placeholder">
-          <!-- Middle logo/text placeholder -->
-        </div>
-      </div>
-      <nav class="header-right">
-        <a href="{% url 'home' %}" class="nav-button">Home</a>
-        <a href="{% url 'changelog:post_list' %}" class="nav-button">Changelog</a>
-      </nav>
-    </div>
-  </header>
+  {% include "includes/_header.html" %}
   <div id="content">
     {% block content %}
     {% endblock %}

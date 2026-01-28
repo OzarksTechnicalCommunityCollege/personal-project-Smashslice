@@ -4,7 +4,7 @@ from django.http import Http404
 # Create your views here.
 
 # Render post list
-def post_list(request):
+def update_list(request):
     updates = Update.published.all()
     
     return render(
@@ -14,7 +14,7 @@ def post_list(request):
     )
     
 # Render indivdual post details
-def post_detail(request, id):
+def update_detail(request, id):
     update = get_object_or_404(
         Update,
         id=id,
