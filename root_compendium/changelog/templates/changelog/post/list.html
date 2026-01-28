@@ -12,7 +12,7 @@
     {% for update in updates %}
       <div class="update-card">
         <h3>
-          <a href="{% url 'changelog:update_detail' update.major_version update.current_patch update.bug_fix %}">
+          <a href="{{ update.get_absolute_url }}">
             {{ update.title }} - {{ update.version }}
           </a>
         </h3>

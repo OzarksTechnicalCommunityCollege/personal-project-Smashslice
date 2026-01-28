@@ -2,6 +2,8 @@ from django.conf import settings
 from django.db import models
 from django.utils import timezone
 
+from django.urls import reverse
+
 # Manager for handling post status
 class PublishedManager(models.Manager):
     def get_queryset(self):
@@ -69,3 +71,12 @@ class Update(models.Model):
     def version(self):
         """Returns formatted version string like 1.2a"""
         return f"{self.major_version}.{self.current_patch}{self.bug_fix}"
+    
+    def get_absolute_url(self):
+        return reverse(
+            'changelog:update_detail', 
+            args=[
+                self.major_version,
+                self.current_patch,
+                self.bug_fix]
+        )
