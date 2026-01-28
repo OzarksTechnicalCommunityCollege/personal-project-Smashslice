@@ -28,7 +28,10 @@ You should now have a running server with a blank home page.
 
 ## Setting up mock data
 
-Coming soon
+After the above setup run the following command to generate test data
+```bash
+python manage.py generate_test_data
+```
 
 ## Versioning Standard
 Three types of updates, Major Version, Current Patch, Bug fix.
