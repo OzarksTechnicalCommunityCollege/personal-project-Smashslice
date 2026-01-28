@@ -29,3 +29,8 @@ You should now have a running server with a blank home page.
 ## Setting up mock data
 
 Coming soon
+
+## Versioning Standard
+Three types of updates, Major Version, Current Patch, Bug fix.
+
+A major version is a culmination of features and patches that leads to a specific goal (i.e. 'Short term goal: Get a basic semblance of automation going with integrated commits') being completed. Current patch is the current working version, may include a number of small fixes, and will usually be a merge after roughly one weeks worth of work. A bug fix is an immediate problem on the current version that causes enough of an issue to be patched immediately instead of waiting for the next patch. 

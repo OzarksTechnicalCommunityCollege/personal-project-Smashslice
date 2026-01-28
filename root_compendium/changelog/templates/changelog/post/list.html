@@ -23,6 +23,9 @@
         <p>Update Type: {{ update.change_type }} - Automated update: {{ update.automated_update }}</p>
       </div>
     {% endfor %}
+    
+    {% include 'changelog/includes/_updates_placeholder.html' %}
+    {% include 'includes/_pagination.html' with page=updates %}
   </section>
   
   <!-- Todo List Section -->
@@ -30,6 +33,8 @@
     <div class="section-header todo-header">
       <h2>To Do List</h2>
     </div>
+    
+    {% include 'changelog/includes/_todo_placeholder.html' %}
   </aside>
   
   <!-- Requested Changes Section -->
@@ -37,6 +42,8 @@
     <div class="section-header changes-header">
       <h2>Requested Changes</h2>
     </div>
+    
+    {% include 'changelog/includes/_requests_placeholder.html' %}
   </aside>
 </div>
 
