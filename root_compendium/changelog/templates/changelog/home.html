@@ -1,0 +1,8 @@
+{% extends "changelog/base.html" %}
+
+{% block title %}Home{% endblock %}
+{% block content %}
+  <h1>Welcome to the Root Compendium</h1>
+  <p>Current active projects: Changelog</p>
+  <p><a href="{% url 'changelog:post_list' %}">View Changelog</a></p>
+{% endblock %}

@@ -7,6 +7,8 @@
       <p class="date">
       Published {{ post.publish }} by {{ post.author }}
     </p>
+    <!-- References the previous page to create a back button -->
+    <!-- SRC: Stack Overflow -->
     <a href="{{request.META.HTTP_REFERER|escape}}">Back</a>
   </div>
 {% endblock %}
