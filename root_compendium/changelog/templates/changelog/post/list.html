@@ -42,8 +42,15 @@
     <div class="section-header changes-header">
       <h2>Requested Changes</h2>
     </div>
-    
-    {% include 'changelog/includes/_requests_placeholder.html' %}
+    {% for request in requested %}
+      <div class="changes-card">
+        <p><strong>{{ request.subject }}</strong></p>
+        <p>{{ request.request_text|truncatewords:20 }}</p>
+      </div>
+    {% endfor %}
+    {% include 'changelog/includes/_change_request_form.html' %}
+
+    <!-- {% include 'changelog/includes/_requests_placeholder.html' %} -->
   </aside>
 </div>
 

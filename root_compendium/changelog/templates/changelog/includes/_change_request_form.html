@@ -1,0 +1,7 @@
+<h2>Request a new change</h2>
+<form action="{% url "changelog:change_request_form" %}" method="post">
+
+    {{ form.as_p }}
+    {% csrf_token %}
+  <p><input type="submit" value="Submit Change Request"></p>
+</form>

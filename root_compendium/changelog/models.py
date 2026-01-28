@@ -4,11 +4,27 @@ from django.utils import timezone
 
 from django.urls import reverse
 
+#Managers
+
 # Manager for handling post status
 class PublishedManager(models.Manager):
     def get_queryset(self):
         return (
             super().get_queryset().filter(status=Update.Status.PUBLISHED)
+        )
+
+# Manager for showering requested changes
+class RequestedChangeManager(models.Manager):
+    def get_queryset(self):
+        return (
+            super().get_queryset().filter(status=ChangeRequest.Status.REQUESTED)
+        )
+        
+# Manager for showing accepted changes
+class AcceptedChangeManager(models.Manager):
+    def get_queryset(self):
+        return (
+            super().get_queryset().filter(status=ChangeRequest.Status.ACCEPTED)
         )
 
 class Update(models.Model):
@@ -27,12 +43,15 @@ class Update(models.Model):
     publish = models.DateTimeField(default=timezone.now)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-    objects = models.Manager()
-    published = PublishedManager()
     major_version = models.IntegerField()
     current_patch = models.IntegerField()
     bug_fix = models.CharField(max_length=1)
     automated_post = models.BooleanField(default=False)
+    
+    # Managers
+    objects = models.Manager()
+    published = PublishedManager()
+    
 
     # List of change types for use in automatic versioning later on
     CHANGE_TYPES = [
@@ -80,3 +99,44 @@ class Update(models.Model):
                 self.current_patch,
                 self.bug_fix]
         )
+        
+class ChangeRequest(models.Model):
+    
+    # Sub classes
+    class Status(models.TextChoices):
+        REQUESTED = 'R', 'Requested'
+        ACCEPTED = 'A', 'Accepted'
+        DENIED = 'D', 'Denied'
+        COMPLETED = 'C', 'Completed'
+    
+    # Properties
+    request_number = models.AutoField(primary_key=True)
+    subject = models.CharField(max_length=25)
+    email = models.EmailField()
+    request_text = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)
+    accepted_at = models.DateTimeField(null=True, blank=True) # We want these to be allowed to be empty as they will update programatically elsewhere
+    completed_at = models.DateTimeField(null=True, blank=True)
+    
+    status = models.CharField(
+        max_length=1,
+        choices=Status,
+        default=Status.REQUESTED
+    )
+    
+    # Managers
+    objects = models.Manager()
+    accepted_requests = AcceptedChangeManager()
+    requested_requests = RequestedChangeManager()
+    
+    # Meta
+    class Meta:
+        ordering = ['accepted_at']
+        indexes = [
+            models.Index(fields=['accepted_at'])
+        ]
+        
+    def __str__(self):
+        return f'Requested at {self.created}'
+        
+    

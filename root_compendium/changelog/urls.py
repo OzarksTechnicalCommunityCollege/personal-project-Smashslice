@@ -11,5 +11,5 @@ urlpatterns = [
         '<int:major_version>.<int:current_patch><str:bug_fix>', views.update_detail, 
         name='update_detail'
     ),
-    
+    path('submit_change_request', views.post_change_request, name='change_request_form')
 ]
