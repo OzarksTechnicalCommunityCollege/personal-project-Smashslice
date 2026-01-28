@@ -26,17 +26,17 @@ class Update(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     objects = models.Manager()
-    published = PublishedManager()
-    version = models.CharField(max_length=10)
+    published = PublishedManager
+    major_version = models.CharField(max_length=3)
+    current_patch = models.CharField(max_length=3)
+    bug_fix = models.CharField(max_length=1)
     automated_post = models.BooleanField(default=False)
 
     # List of change types for use in automatic versioning later on
     CHANGE_TYPES = [
         ('M', 'Major'),
-        ('F', 'Feature'),
-        ('W', 'Weekly'),
+        ('P', 'Patch'),
         ('B', 'Bug'),
-        ('O', 'Other')
     ]
 
     # Keep track of the change type for this log post
