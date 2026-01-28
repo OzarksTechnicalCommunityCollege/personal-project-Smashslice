@@ -66,7 +66,6 @@ class Update(models.Model):
         indexes = [
             models.Index(fields=['-publish']),
         ]
-    
-# String function
-def __str__(self):
-    return self.title
+        
+    def __str__(self):
+        return self.title
