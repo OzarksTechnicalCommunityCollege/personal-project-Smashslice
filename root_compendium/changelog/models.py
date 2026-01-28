@@ -22,20 +22,12 @@ class Update(models.Model):
     title = models.CharField(max_length=250)
     slug = models.SlugField(max_length=250)
     body = models.TextField()
-
-    author = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name='updates'
-    )
-    
     publish = models.DateTimeField(default=timezone.now)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-    
+    objects = models.Manager()
+    published = PublishedManager()
     version = models.CharField(max_length=10)
-
-    # For if a post is posted VIA pipeline automation 
     automated_post = models.BooleanField(default=False)
 
     # List of change types for use in automatic versioning later on
@@ -56,10 +48,12 @@ class Update(models.Model):
         default=Status.DRAFT
     )
     
-
-    objects = models.Manager()
-    published = PublishedManager()
-
+    author = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='updates'
+    )
+    
     # Meta rule for handling sorting
     class Meta:
         ordering = ['-publish']
