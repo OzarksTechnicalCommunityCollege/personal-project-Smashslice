@@ -27,8 +27,8 @@ class Update(models.Model):
     updated = models.DateTimeField(auto_now=True)
     objects = models.Manager()
     published = PublishedManager()
-    major_version = models.CharField(max_length=3)
-    current_patch = models.CharField(max_length=3)
+    major_version = models.IntegerField(max_length=3)
+    current_patch = models.IntegerField(max_length=3)
     bug_fix = models.CharField(max_length=1)
     automated_post = models.BooleanField(default=False)
 
