@@ -23,5 +23,5 @@ urlpatterns = [
     path('', TemplateView.as_view(template_name='changelog/home.html'), name='home'),
     path('admin/', admin.site.urls),
     path('changelog/', include('changelog.urls',namespace='changelog')),
-    path('users/', include('users.urls'), namespace='users')
+    path('users/', include('users.urls', namespace='users'))
 ]

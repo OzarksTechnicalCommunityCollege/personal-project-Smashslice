@@ -4,7 +4,7 @@ from django.http import Http404
 from django.core.paginator import Paginator
 from django.views.generic import ListView
 from django.views.decorators.http import require_POST
-from .forms import ChangeRequestForm, LoginForm
+from .forms import ChangeRequestForm
 
 
 

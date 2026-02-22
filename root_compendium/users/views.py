@@ -3,6 +3,10 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from .forms import LoginForm
+from django.shortcuts import get_object_or_404, render
+from django.http import Http404
+from django.views.decorators.http import require_POST
+
 
 
 # Auth Views
