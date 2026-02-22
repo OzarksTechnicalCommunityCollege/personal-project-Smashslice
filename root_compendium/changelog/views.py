@@ -6,6 +6,9 @@ from django.views.generic import ListView
 from django.views.decorators.http import require_POST
 from .forms import ChangeRequestForm
 
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
+
 
 
 
@@ -27,11 +30,6 @@ def update_list(request):
         {'updates': updates, 'form': form, 'requested': requested}
     )
 
-# class UpdateListView(ListView):
-#     queryset = Update.published.all()
-#     context_object_name = 'posts'
-#     paginate_by = 5
-#     template_name = 'changelog/post/list.html'
     
 # Render indivdual post details
 def update_detail(request, major_version, current_patch, bug_fix):
