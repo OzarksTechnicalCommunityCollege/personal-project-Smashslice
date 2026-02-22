@@ -4,12 +4,12 @@ from django.http import Http404
 from django.core.paginator import Paginator
 from django.views.generic import ListView
 from django.views.decorators.http import require_POST
-from .forms import ChangeRequestForm
-
-from django.contrib.auth import authenticate, login
-from django.contrib.auth.decorators import login_required
+from .forms import ChangeRequestForm, LoginForm
 
 
+
+
+# Post Views
 
 
 # Render post list
@@ -64,5 +64,3 @@ def post_change_request(request):
             'change_request': change_request
         }
     )
-    
-    
