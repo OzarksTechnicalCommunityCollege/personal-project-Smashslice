@@ -22,11 +22,15 @@ from django.contrib.auth import views as auth_views
 urlpatterns = [
     # Creates an entry point for our site, picking changelog/home for now, though as the project grows this may become its own app depending on needs
     path('', TemplateView.as_view(template_name='changelog/home.html'), name='home'),
-    path('admin/', admin.site.urls),
-    path('changelog/', include('changelog.urls',namespace='changelog')),
     
     # Auth URLS at root so we can access them in settings
     path('login/', auth_views.LoginView.as_view(), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('users/', include('users.urls', namespace='users')),
+    
+    
+    path('admin/', admin.site.urls),
+    path('changelog/', include('changelog.urls',namespace='changelog')),
+    
+
 ]
