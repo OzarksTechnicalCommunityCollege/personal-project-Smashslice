@@ -3,6 +3,7 @@
 {% block content %}
   <h1>Dashboard</h1>
   <p>Welcome, {{ user.username }}! You can <a href="{% url "users:edit" %}">edit your profile</a> or .</p>
+  <p><a href="{% url "users:password_reset" %}">change your password</a></p>
   <form method="post" action="{% url 'logout' %}" style="display: inline;">
       {% csrf_token %}
       <button type="submit" style="background: none; border: none; color: blue; cursor: pointer; text-decoration: underline;">
