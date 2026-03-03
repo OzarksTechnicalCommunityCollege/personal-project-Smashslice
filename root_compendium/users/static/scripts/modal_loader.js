@@ -57,6 +57,9 @@ const ModalLoader = {
                     options.onLoad(modal);
                 }
 
+                // Setup form interception for AJAX submission
+                this.setupFormHandlers(modal);
+
                 return modal;
             } else {
                 throw new Error('No .modal element found in response');
@@ -136,6 +139,61 @@ const ModalLoader = {
             }
         };
         document.addEventListener('keydown', escapeHandler);
+    },
+
+    /**
+     * Setup form handlers for AJAX submission
+     * @param {HTMLElement} modal - The modal element
+     */
+    setupFormHandlers(modal) {
+        const forms = modal.querySelectorAll('form[data-modal-form]');
+        forms.forEach(form => {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const formData = new FormData(form);
+                const url = form.action;
+                
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                        },
+                        body: formData
+                    });
+                    
+                    const contentType = response.headers.get('content-type');
+                    
+                    if (contentType && contentType.includes('application/json')) {
+                        // JSON response = success
+                        const data = await response.json();
+                        if (data.success) {
+                            this.close(modal);
+                            if (data.redirect) {
+                                window.location.href = data.redirect;
+                            } else {
+                                window.location.reload();
+                            }
+                        }
+                    } else {
+                        // HTML response = form errors, replace modal content
+                        const html = await response.text();
+                        const container = document.getElementById(this.containerId);
+                        container.innerHTML = html;
+                        
+                        const newModal = container.querySelector('.modal');
+                        if (newModal) {
+                            this.show(newModal);
+                            this.setupCloseHandlers(newModal);
+                            this.setupFormHandlers(newModal);
+                        }
+                    }
+                } catch (error) {
+                    console.error('Form submission error:', error);
+                }
+            });
+        });
     },
 
     /**

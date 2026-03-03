@@ -17,7 +17,7 @@
         </p>
       {% endif %}
       <div class="login-form">
-        <form action="{% url 'login' %}" method="post">
+        <form action="{% url 'users:login_modal' %}" method="post" data-modal-form>
           {{ form.as_p }}
           {% csrf_token %}
           <input type="hidden" name="next" value="{{ next }}" />

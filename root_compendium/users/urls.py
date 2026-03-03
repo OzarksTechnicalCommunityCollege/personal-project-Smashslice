@@ -33,4 +33,5 @@ urlpatterns = [
     
     # Modal endpoints
     path('login-modal/', views.login_modal, name='login_modal'),
+    path('logged-out-modal/', views.logged_out_modal, name='logged_out_modal'),
 ]

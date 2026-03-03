@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from .forms import LoginForm, UserRegistrationForm, UserEditForm, ProfileEditForm
 from .models import Profile
 from django.shortcuts import get_object_or_404, render
@@ -92,5 +92,26 @@ def edit(request):
     )
     
 def login_modal(request):
-    form = LoginForm()
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            cd = form.cleaned_data
+            user = authenticate(
+                request,
+                username=cd['username'],
+                password=cd['password']
+            )
+            if user is not None:
+                if user.is_active:
+                    login(request, user)
+                    return JsonResponse({'success': True, 'redirect': '/'})
+                else:
+                    form.add_error(None, 'This account is disabled.')
+            else:
+                form.add_error(None, 'Invalid username or password.')
+    else:
+        form = LoginForm()
     return render(request, 'partials/_p_login.html', {'form': form})
+
+def logged_out_modal(request):
+    return render(request, 'partials/_p_logged_out.html')
