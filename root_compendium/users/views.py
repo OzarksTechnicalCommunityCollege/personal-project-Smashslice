@@ -90,3 +90,7 @@ def edit(request):
             'profile_form': profile_form
         }
     )
+    
+def login_modal(request):
+    form = LoginForm()
+    return render(request, 'partials/_p_login.html', {'form': form})

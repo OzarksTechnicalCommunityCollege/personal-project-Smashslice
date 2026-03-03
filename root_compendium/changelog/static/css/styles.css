@@ -417,3 +417,185 @@ body {
     background-color: rgba(255, 213, 79, 0.1);
     border-color: var(--sunflower-yellow);
 }
+
+/* ====================================
+   Modal Styles
+   ==================================== */
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    background-color: var(--deep-green);
+    border-radius: var(--border-radius);
+    border: var(--border-width) solid var(--dark-grey);
+    box-shadow: var(--shadow-hover);
+    max-width: 450px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-30px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes modalSlideOut {
+    from {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-30px) scale(0.95);
+    }
+}
+
+.modal.closing .modal-content {
+    animation: modalSlideOut 0.3s ease forwards;
+}
+
+.modal.closing {
+    animation: fadeOut 0.3s ease forwards;
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem var(--card-padding);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modal-header h2 {
+    margin: 0;
+    color: var(--text-light);
+    font-size: 1.5rem;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    color: var(--text-light);
+    font-size: 1.75rem;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    opacity: 0.7;
+    transition: opacity var(--transition-speed) ease, transform var(--transition-speed) ease;
+}
+
+.modal-close:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.modal-body {
+    padding: var(--card-padding);
+    color: var(--text-light);
+}
+
+.modal-body p {
+    margin-bottom: 1rem;
+    line-height: 1.6;
+}
+
+.modal-body a {
+    color: #90ee90;
+}
+
+.modal-body a:hover {
+    color: #b4ffb4;
+}
+
+/* Modal Form Styles */
+.modal-body .login-form {
+    margin-top: 1rem;
+}
+
+.modal-body form p {
+    margin-bottom: 1rem;
+}
+
+.modal-body form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--text-light);
+}
+
+.modal-body form input[type="text"],
+.modal-body form input[type="password"],
+.modal-body form input[type="email"] {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: var(--border-width) solid var(--dark-grey);
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--text-light);
+    font-size: 1rem;
+    transition: border-color var(--transition-speed) ease, background-color var(--transition-speed) ease;
+}
+
+.modal-body form input[type="text"]:focus,
+.modal-body form input[type="password"]:focus,
+.modal-body form input[type="email"]:focus {
+    outline: none;
+    border-color: var(--sunflower-yellow);
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+.modal-body form input[type="submit"] {
+    display: inline-block;
+    padding: 0.75rem 2rem;
+    background-color: var(--sunflower-yellow);
+    color: var(--text-dark);
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all var(--transition-speed) ease;
+    width: 100%;
+}
+
+.modal-body form input[type="submit"]:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(255, 213, 79, 0.4);
+}
+
+.modal-body .error-message {
+    background-color: rgba(220, 53, 69, 0.2);
+    border: 1px solid rgba(220, 53, 69, 0.5);
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    color: #ff6b6b;
+}
+
+body.modal-open {
+    overflow: hidden;
+}

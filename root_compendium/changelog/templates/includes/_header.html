@@ -34,7 +34,7 @@
           {% csrf_token %}
         </form>
       {% else %}
-        <a href="{% url "login" %}">Log-in</a>
+        <a href="#" onclick="loadModal('{% url 'users:login_modal' %}'); return false;">Log-in</a>
       {% endif %}
     </span>
       </nav>

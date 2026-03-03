@@ -31,4 +31,6 @@ urlpatterns = [
         name='password_reset_complete'
     ),
     
+    # Modal endpoints
+    path('login-modal/', views.login_modal, name='login_modal'),
 ]
