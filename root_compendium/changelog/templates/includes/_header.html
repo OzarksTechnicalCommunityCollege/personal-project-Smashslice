@@ -14,17 +14,7 @@
         <a href="{% url 'home' %}" class="nav-button">Home</a>
         <a href="{% url 'changelog:update_list' %}" class="nav-button">Changelog</a>
       {% if request.user.is_authenticated %}
-      <ul class="menu">
-        <li {% if section == "dashboard" %}class="selected"{% endif %}>
           <a href="{% url 'users:dashboard' %}">My dashboard</a>
-        </li>
-        <li {% if section == "images" %}class="selected"{% endif %}>
-          <a href="#">Images</a>
-        </li>
-        <li {% if section == "people" %}class="selected"{% endif %}>
-          <a href="#">People</a>
-        </li>
-      </ul>
     {% endif %}
     <span class="user">
       {% if request.user.is_authenticated %}
@@ -35,7 +25,7 @@
         </form>
       {% else %}
 
-        <a href="#" data-modal-url="{% url "users:login_modal" %}">Log-in</a>
+        <a href="#" class="nav-button" data-modal-url="{% url "users:login_modal" %}">Log-in</a>
       {% endif %}
     </span>
       </nav>

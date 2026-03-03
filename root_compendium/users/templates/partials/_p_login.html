@@ -13,7 +13,7 @@
       {% else %}
         <p>
           Please, use the following form to log-in.
-          If you don't have an account <a href="{% url "users:register" %}">register here</a>.
+          If you don't have an account <a href="#" data-modal-url="{% url "users:register_modal" %}">register here</a>.
         </p>
       {% endif %}
       <div class="login-form">

@@ -59,6 +59,9 @@ const ModalLoader = {
 
                 // Setup form interception for AJAX submission
                 this.setupFormHandlers(modal);
+                
+                // Setup modal triggers inside this modal
+                this.initTriggersIn(modal);
 
                 return modal;
             } else {
@@ -187,6 +190,7 @@ const ModalLoader = {
                             this.show(newModal);
                             this.setupCloseHandlers(newModal);
                             this.setupFormHandlers(newModal);
+                            this.initTriggersIn(newModal);
                         }
                     }
                 } catch (error) {
@@ -197,15 +201,23 @@ const ModalLoader = {
     },
 
     /**
-     * Auto-initialize click handlers for elements with data-modal-url
+     * Initialize triggers within a specific element
+     * @param {HTMLElement} context - The element to search within
      */
-    initTriggers() {
-        document.querySelectorAll('[data-modal-url]').forEach(trigger => {
+    initTriggersIn(context) {
+        context.querySelectorAll('[data-modal-url]').forEach(trigger => {
             trigger.addEventListener('click', (e) => {
                 e.preventDefault();
                 this.load(trigger.dataset.modalUrl);
             });
         });
+    },
+
+    /**
+     * Auto-initialize click handlers for elements with data-modal-url
+     */
+    initTriggers() {
+        this.initTriggersIn(document);
     }
 };
 

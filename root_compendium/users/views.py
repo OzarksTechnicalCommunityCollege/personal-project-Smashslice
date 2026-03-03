@@ -115,3 +115,22 @@ def login_modal(request):
 
 def logged_out_modal(request):
     return render(request, 'partials/_p_logged_out.html')
+
+def register_modal(request):
+    if request.method == 'POST':
+        user_form = UserRegistrationForm(request.POST)
+        if user_form.is_valid():
+            new_user = user_form.save(commit=False)
+            new_user.set_password(
+                user_form.cleaned_data['password']
+            )
+            new_user.save()
+            Profile.objects.create(user=new_user)
+            return render(
+                request,
+                'partials/_p_register_done.html',
+                {'new_user': new_user}
+            )
+    else:
+        user_form = UserRegistrationForm()
+    return render(request, 'partials/_p_register.html', {'user_form': user_form})
