@@ -136,6 +136,18 @@ const ModalLoader = {
             }
         };
         document.addEventListener('keydown', escapeHandler);
+    },
+
+    /**
+     * Auto-initialize click handlers for elements with data-modal-url
+     */
+    initTriggers() {
+        document.querySelectorAll('[data-modal-url]').forEach(trigger => {
+            trigger.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.load(trigger.dataset.modalUrl);
+            });
+        });
     }
 };
 
@@ -143,3 +155,8 @@ const ModalLoader = {
 function loadModal(url, options = {}) {
     return ModalLoader.load(url, options);
 }
+
+// Auto-init on DOM ready
+document.addEventListener('DOMContentLoaded', () => {
+    ModalLoader.initTriggers();
+});
