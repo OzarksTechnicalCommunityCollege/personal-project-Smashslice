@@ -34,7 +34,8 @@
           {% csrf_token %}
         </form>
       {% else %}
-        <a href="#" onclick="loadModal('{% url 'users:login_modal' %}'); return false;">Log-in</a>
+      <!-- Ignore this error, it is a JS linter error. It could be fixed by extrapolating the JS into a function, but I see no reason to add a bunch of extra code to fix a non-issue. -->
+        <a href="#" onclick="loadModal('{% url "users:login_modal" %}'); return false;">Log-in</a>
       {% endif %}
     </span>
       </nav>
