@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import TemplateView # Import for setting an entry point
 from django.contrib.auth import views as auth_views
+from django.conf import settings
 
 urlpatterns = [
     # Creates an entry point for our site, picking changelog/home for now, though as the project grows this may become its own app depending on needs
@@ -34,3 +35,8 @@ urlpatterns = [
     
 
 ]
+
+if settings.DEBUG and 'debug_toolbar' in settings.INSTALLED_APPS:
+    urlpatterns = [
+        path('__debug__/', include('debug_toolbar.urls')),
+    ] + urlpatterns

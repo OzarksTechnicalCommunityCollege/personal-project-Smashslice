@@ -1,4 +1,3 @@
-from django.contrib.auth import views as auth_views
 from django.urls import path
 # from django.conf.urls import url
 from . import views
@@ -13,4 +12,9 @@ urlpatterns = [
         name='update_detail'
     ),
     path('submit_change_request', views.post_change_request, name='change_request_form'),
+    path(
+        'change-requests/<int:request_number>/status/',
+        views.update_change_request_status,
+        name='change_request_update_status',
+    ),
 ]

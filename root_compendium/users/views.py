@@ -2,11 +2,10 @@ from django.shortcuts import render
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, JsonResponse
+from django.core.cache import cache
 from .forms import LoginForm, UserRegistrationForm, UserEditForm, ProfileEditForm
 from .models import Profile
-from django.shortcuts import get_object_or_404, render
-from django.http import Http404
-from django.views.decorators.http import require_POST
+from changelog.models import ChangeRequestNotification
 
 
 
@@ -59,10 +58,24 @@ def register(request):
 
 @login_required
 def dashboard(request):
+    cache_key = f'user:{request.user.id}:dashboard_notifications'
+    notifications = cache.get(cache_key)
+
+    if notifications is None:
+        notifications = list(
+            ChangeRequestNotification.objects
+            .filter(user=request.user)
+            .select_related('change_request', 'related_update')[:10]
+        )
+        cache.set(cache_key, notifications, 60)
+
     return render(
         request,
         'users/dashboard.html',
-        {'section': 'dashboard'}
+        {
+            'section': 'dashboard',
+            'notifications': notifications,
+        }
     )
     
 @login_required

@@ -17,14 +17,14 @@ class PublishedManager(models.Manager):
 class RequestedChangeManager(models.Manager):
     def get_queryset(self):
         return (
-            super().get_queryset().filter(status=ChangeRequest.Status.REQUESTED)
+            super().get_queryset().filter(status=ChangeRequest.Status.PENDING)
         )
         
 # Manager for showing accepted changes
 class AcceptedChangeManager(models.Manager):
     def get_queryset(self):
         return (
-            super().get_queryset().filter(status=ChangeRequest.Status.ACCEPTED)
+            super().get_queryset().filter(status=ChangeRequest.Status.IN_PROGRESS)
         )
 
 class Update(models.Model):
@@ -74,6 +74,13 @@ class Update(models.Model):
         on_delete=models.CASCADE,
         related_name='updates'
     )
+
+    change_requests = models.ManyToManyField(
+        'ChangeRequest',
+        through='UpdateChangeRequestLink',
+        related_name='updates',
+        blank=True,
+    )
     
     # Meta rule for handling sorting
     class Meta:
@@ -104,8 +111,8 @@ class ChangeRequest(models.Model):
     
     # Sub classes
     class Status(models.TextChoices):
-        REQUESTED = 'R', 'Requested'
-        ACCEPTED = 'A', 'Accepted'
+        PENDING = 'P', 'Pending'
+        IN_PROGRESS = 'I', 'In Progress'
         DENIED = 'D', 'Denied'
         COMPLETED = 'C', 'Completed'
     
@@ -115,14 +122,36 @@ class ChangeRequest(models.Model):
     email = models.EmailField()
     request_text = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    requester = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='change_requests'
+    )
     accepted_at = models.DateTimeField(null=True, blank=True) # We want these to be allowed to be empty as they will update programatically elsewhere
     completed_at = models.DateTimeField(null=True, blank=True)
     
     status = models.CharField(
         max_length=1,
         choices=Status,
-        default=Status.REQUESTED
+        default=Status.PENDING
     )
+
+    tags = models.ManyToManyField(
+        'ChangeRequestTag',
+        through='ChangeRequestTagAssignment',
+        related_name='change_requests',
+        blank=True,
+    )
+
+    ALLOWED_STATUS_TRANSITIONS = {
+        Status.PENDING: {Status.IN_PROGRESS, Status.DENIED},
+        Status.IN_PROGRESS: {Status.COMPLETED},
+        Status.DENIED: set(),
+        Status.COMPLETED: set(),
+    }
     
     # Managers
     objects = models.Manager()
@@ -131,12 +160,127 @@ class ChangeRequest(models.Model):
     
     # Meta
     class Meta:
-        ordering = ['accepted_at']
+        ordering = ['-updated']
         indexes = [
-            models.Index(fields=['accepted_at'])
+            models.Index(fields=['-updated'])
         ]
         
     def __str__(self):
         return f'Requested at {self.created}'
+    # Only allows specific status' to transition between each other
+    def can_transition_to(self, next_status):
+        return next_status in self.ALLOWED_STATUS_TRANSITIONS.get(self.status, set())
+    # If trying to move from completed > denied it would fail and hit this
+    def apply_status(self, next_status):
+        if not self.can_transition_to(next_status):
+            raise ValueError(
+                f'Cannot transition from {self.get_status_display()} '
+                f'to {ChangeRequest.Status(next_status).label}.'
+            )
+        self.status = next_status
+
+
+class ChangeRequestTag(models.Model):
+    code = models.CharField(max_length=32, unique=True)
+    label = models.CharField(max_length=32)
+
+    class Meta:
+        ordering = ['label']
+
+    def __str__(self):
+        return self.label
+
+# Tag assignment for change requests
+class ChangeRequestTagAssignment(models.Model):
+    change_request = models.ForeignKey(ChangeRequest, on_delete=models.CASCADE)
+    tag = models.ForeignKey(ChangeRequestTag, on_delete=models.CASCADE)
+    assigned_at = models.DateTimeField(auto_now_add=True)
+    assigned_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='assigned_change_request_tags',
+    )
+
+    class Meta:
+        ordering = ['-assigned_at']
+        indexes = [
+            models.Index(fields=['change_request', '-assigned_at']),
+        ]
+
+    def __str__(self):
+        return f'{self.change_request_id} -> {self.tag.label}'
+
+class ChangeRequestNotification(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='change_request_notifications',
+    )
+    change_request = models.ForeignKey(
+        ChangeRequest,
+        on_delete=models.CASCADE,
+        related_name='notifications',
+    )
+    related_update = models.ForeignKey(
+        Update,
+        on_delete=models.SET_NULL,
+        related_name='change_request_notifications',
+        null=True,
+        blank=True,
+    )
+    previous_status = models.CharField(max_length=1, choices=ChangeRequest.Status)
+    new_status = models.CharField(max_length=1, choices=ChangeRequest.Status)
+    message = models.CharField(max_length=255)
+    created = models.DateTimeField(auto_now_add=True)
+    is_read = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ['-created']
+        indexes = [
+            models.Index(fields=['user', 'is_read']),
+            models.Index(fields=['-created']),
+        ]
+
+    def __str__(self):
+        return f'Notification for {self.user_id} on request {self.change_request_id}'
+
+
+class UpdateChangeRequestLink(models.Model):
+    update = models.ForeignKey(
+        Update,
+        on_delete=models.CASCADE,
+        related_name='change_request_links',
+    )
+    change_request = models.ForeignKey(
+        ChangeRequest,
+        on_delete=models.CASCADE,
+        related_name='update_links',
+    )
+    linked_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='linked_update_change_requests',
+    )
+    marks_completed = models.BooleanField(default=False)
+    linked_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-linked_at']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['update', 'change_request'],
+                name='unique_update_change_request_link',
+            )
+        ]
+        indexes = [
+            models.Index(fields=['change_request', '-linked_at']),
+        ]
+
+    def __str__(self):
+        return f'Update {self.update_id} -> request {self.change_request_id}'
         
     

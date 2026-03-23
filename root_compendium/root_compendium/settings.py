@@ -42,6 +42,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
+# Sanity check for when we eventually have a production and development environment, checks to make sure we are in dev before enabling toolbar
+if DEBUG and config('ENABLE_DEBUG_TOOLBAR', default=True, cast=bool):
+    INSTALLED_APPS += ['debug_toolbar']
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -52,6 +55,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+# Sanity check for when we eventually have a production and development environment, checks to make sure we are in dev before enabling toolbar
+if DEBUG and config('ENABLE_DEBUG_TOOLBAR', default=True, cast=bool):
+    MIDDLEWARE = ['debug_toolbar.middleware.DebugToolbarMiddleware'] + MIDDLEWARE
 
 ROOT_URLCONF = 'root_compendium.urls'
 
@@ -127,6 +133,11 @@ USE_I18N = True
 
 USE_TZ = True
 
+INTERNAL_IPS = [
+    '127.0.0.1',
+    'localhost',
+]
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
@@ -139,3 +150,28 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 LOGIN_REDIRECT_URL = 'users:dashboard'
 LOGIN_URL = 'login'
 LOGOUT_URL = 'logout'
+
+
+# Cache (Redis)
+REDIS_URL = config('REDIS_URL', default='redis://127.0.0.1:6379/1')
+USE_REDIS_CACHE = config('USE_REDIS_CACHE', default=True, cast=bool)
+
+if USE_REDIS_CACHE:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django_redis.cache.RedisCache',
+            'LOCATION': REDIS_URL,
+            'OPTIONS': {
+                'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+                'IGNORE_EXCEPTIONS': True,
+            },
+            'KEY_PREFIX': 'root_compendium',
+        }
+    }
+else:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+            'LOCATION': 'root-compendium-local-cache',
+        }
+    }

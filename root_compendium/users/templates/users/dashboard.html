@@ -10,4 +10,21 @@
           Logout
       </button>
   </form>
+
+  <h2>Change Request Updates</h2>
+  {% if notifications %}
+    <ul>
+      {% for notification in notifications %}
+        <li>
+          {{ notification.message }}
+          {% if notification.related_update %}
+            <a href="{{ notification.related_update.get_absolute_url }}">View update</a>
+          {% endif %}
+          ({{ notification.created }})
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No status updates yet.</p>
+  {% endif %}
 {% endblock %}

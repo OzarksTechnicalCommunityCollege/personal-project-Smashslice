@@ -42,10 +42,50 @@
     <div class="section-header changes-header">
       <h2>Requested Changes</h2>
     </div>
-    {% for request in requested %}
+    <div class="changes-filters">
+      <a
+        href="?show_pending={% if show_pending %}0{% else %}1{% endif %}{% if show_denied %}&show_denied=1{% endif %}"
+        class="nav-button"
+      >
+        {% if show_pending %}Hide Pending{% else %}Show Pending{% endif %}
+      </a>
+      <a
+        href="?show_denied={% if show_denied %}0{% else %}1{% endif %}{% if show_pending %}&show_pending=1{% endif %}"
+        class="nav-button"
+      >
+        {% if show_denied %}Hide Denied{% else %}Show Denied{% endif %}
+      </a>
+    </div>
+
+    {% for change_request in requested %}
       <div class="changes-card">
-        <p><strong>{{ request.subject }}</strong></p>
-        <p>{{ request.request_text|truncatewords:20 }}</p>
+        <p><strong>{{ change_request.subject }}</strong></p>
+        <p>Status: {{ change_request.get_status_display }}</p>
+        <p>Updated: {{ change_request.updated }}</p>
+        <p>{{ change_request.request_text|truncatewords:20 }}</p>
+
+        {% if request.user.is_staff %}
+          <div class="status-actions">
+            {% if change_request.status == 'P' %}
+              <form method="post" action="{% url 'changelog:change_request_update_status' change_request.request_number %}">
+                {% csrf_token %}
+                <input type="hidden" name="status" value="I">
+                <button type="submit">Mark In Progress</button>
+              </form>
+              <form method="post" action="{% url 'changelog:change_request_update_status' change_request.request_number %}">
+                {% csrf_token %}
+                <input type="hidden" name="status" value="D">
+                <button type="submit">Deny</button>
+              </form>
+            {% elif change_request.status == 'I' %}
+              <form method="post" action="{% url 'changelog:change_request_update_status' change_request.request_number %}">
+                {% csrf_token %}
+                <input type="hidden" name="status" value="C">
+                <button type="submit">Complete</button>
+              </form>
+            {% endif %}
+          </div>
+        {% endif %}
       </div>
     {% endfor %}
     {% include 'changelog/includes/_change_request_form.html' %}
