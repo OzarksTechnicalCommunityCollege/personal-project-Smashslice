@@ -23,3 +23,4 @@ Installed Ruff as the linter for the project and cleaned up a number of unused i
 - [ ] Change or remove to do list as the scope has shifted and it no longer fits in the current iteration of the software. 
 - [ ] Make an admin panel (maybe I should just use djangos after all.) 
 - [ ] Tie change log to docs.md for automatic updates. 
+- [ ] Once the above functionality is completed, dump the database and produce new mock data. 
