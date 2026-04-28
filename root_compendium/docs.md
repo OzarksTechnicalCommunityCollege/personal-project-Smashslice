@@ -1,3 +1,14 @@
+# Module 7 Update
+4/28/26
+
+Added session-based tracking for change requests and a helper class to manage it. Change requests now show session state (new/seen/changed) and link to a detail page that records views and compares last-seen status.
+
+Extended change request list UI to include status badges while keeping existing filters and staff status actions. Added minimal styling for the new badges.
+
+Created RabbitMQ publish/consume scaffolding for status-change notifications, but disabled it by default with a feature flag until the refactor.
+
+Admin cleanup and fixes, including proper ChangeRequest admin registration and resolving update-change request link admin issues.
+
 # Module 6 Update
 3/23/26
 
@@ -24,3 +35,4 @@ Installed Ruff as the linter for the project and cleaned up a number of unused i
 - [ ] Make an admin panel (maybe I should just use djangos after all.) 
 - [ ] Tie change log to docs.md for automatic updates. 
 - [ ] Once the above functionality is completed, dump the database and produce new mock data. 
+- [ ] Wire RabbitMQ notifications in the refactor (enable feature flag, verify queue/email).

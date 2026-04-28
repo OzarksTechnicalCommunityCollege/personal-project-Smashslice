@@ -41,10 +41,8 @@ def update_list(request):
         .filter(status__in=statuses)
         .order_by('-updated')
     )
-    
-    change_requests = ChangeRequest.objects.all().order_by('-created')
     tracker = ChangeRequestTracker(request)
-    for change_request in change_requests:
+    for change_request in requested:
         change_request.session_seen = change_request.request_number in tracker
         change_request.session_status_changed = tracker.status_changed(change_request)
         state = tracker.get_state(change_request.request_number)
@@ -62,7 +60,6 @@ def update_list(request):
             'requested': requested,
             'show_pending': show_pending,
             'show_denied': show_denied,
-            'change_requests': change_requests,
             'viewed_count': viewed_count,
             'viewed_is_high': viewed_is_high,
         }

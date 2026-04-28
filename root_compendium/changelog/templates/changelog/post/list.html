@@ -48,7 +48,6 @@
         {% endif %}
       </p>
     </div>
-<<<<<<< HEAD
     <div class="changes-filters">
       <a
         href="?show_pending={% if show_pending %}0{% else %}1{% endif %}{% if show_denied %}&show_denied=1{% endif %}"
@@ -66,8 +65,23 @@
 
     {% for change_request in requested %}
       <div class="changes-card">
-        <p><strong>{{ change_request.subject }}</strong></p>
-        <p>Status: {{ change_request.get_status_display }}</p>
+        <p>
+          <strong>
+            <a href="{% url 'changelog:change_request_detail' change_request.request_number %}">
+              {{ change_request.subject }}
+            </a>
+          </strong>
+        </p>
+        <div class="changes-meta">
+          <span class="badge badge-status">{{ change_request.get_status_display }}</span>
+          {% if change_request.session_status_changed %}
+            <span class="badge badge-changed">Status changed</span>
+          {% elif change_request.session_seen %}
+            <span class="badge badge-seen">Seen</span>
+          {% else %}
+            <span class="badge badge-new">New</span>
+          {% endif %}
+        </div>
         <p>Updated: {{ change_request.updated }}</p>
         <p>{{ change_request.request_text|truncatewords:20 }}</p>
 
@@ -93,28 +107,6 @@
             {% endif %}
           </div>
         {% endif %}
-=======
-    {% for request in change_requests %}
-      <div class="changes-card">
-        <p>
-          <strong>
-            <a href="{% url 'changelog:change_request_detail' request.request_number %}">
-              {{ request.subject }}
-            </a>
-          </strong>
-        </p>
-        <div class="changes-meta">
-          <span class="badge badge-status">{{ request.get_status_display }}</span>
-          {% if request.session_status_changed %}
-            <span class="badge badge-changed">Status changed</span>
-          {% elif request.session_seen %}
-            <span class="badge badge-seen">Seen</span>
-          {% else %}
-            <span class="badge badge-new">New</span>
-          {% endif %}
-        </div>
-        <p>{{ request.request_text|truncatewords:20 }}</p>
->>>>>>> 09a63a1 (Big commit, have to merge with module6 because I'm very smart.)
       </div>
     {% endfor %}
     {% include 'changelog/includes/_change_request_form.html' %}
