@@ -2,6 +2,13 @@ from django.db.models.signals import post_migrate, post_save, pre_save
 from django.dispatch import receiver
 from django.utils import timezone
 from django.core.cache import cache
+from django.db.models.signals import pre_save, post_save
+from django.dispatch import receiver
+from django.utils import timezone
+from django.conf import settings
+
+from .models import ChangeRequest
+from .rabbitmq import publish_status_change
 
 from .models import (
     ChangeRequest,
@@ -113,3 +120,40 @@ def complete_request_from_update_link(sender, instance, created, **kwargs):
     change_request._status_changed_by = instance.linked_by
     change_request._status_source_update = instance.update
     change_request.save()
+
+
+
+@receiver(pre_save, sender=ChangeRequest)
+def cache_previous_status(sender, instance, **kwargs):
+    if instance.pk:
+        try:
+            previous = sender.objects.get(pk=instance.pk)
+            instance._previous_status = previous.status
+        except sender.DoesNotExist:
+            instance._previous_status = None
+    else:
+        instance._previous_status = None
+
+
+@receiver(post_save, sender=ChangeRequest)
+def publish_status_update(sender, instance, created, **kwargs):
+    if not getattr(settings, 'RABBITMQ_ENABLED', False):
+        return
+    if created:
+        return
+
+    previous_status = getattr(instance, '_previous_status', None)
+    if not previous_status or previous_status == instance.status:
+        return
+
+    payload = {
+        'request_number': instance.request_number,
+        'subject': instance.subject,
+        'email': instance.email,
+        'previous_status': previous_status,
+        'previous_status_label': ChangeRequest.Status(previous_status).label,
+        'current_status': instance.status,
+        'current_status_label': ChangeRequest.Status(instance.status).label,
+        'changed_at': timezone.now().isoformat(),
+    }
+    publish_status_change(payload)

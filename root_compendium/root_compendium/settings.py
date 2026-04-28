@@ -175,3 +175,16 @@ else:
             'LOCATION': 'root-compendium-local-cache',
         }
     }
+# RabbitMQ features are disabled for now; keep settings for later refactor.
+RABBITMQ_ENABLED = config('RABBITMQ_ENABLED', default=False, cast=bool)
+
+# Email for RabbitMQ notifications (console backend for development)
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='noreply@local.test')
+
+# RabbitMQ settings
+RABBITMQ_HOST = config('RABBITMQ_HOST', default='localhost')
+RABBITMQ_PORT = config('RABBITMQ_PORT', default=5672, cast=int)
+RABBITMQ_QUEUE = config('RABBITMQ_QUEUE', default='change_request_status')
+RABBITMQ_USER = config('RABBITMQ_USER', default='')
+RABBITMQ_PASSWORD = config('RABBITMQ_PASSWORD', default='')

@@ -5,6 +5,7 @@ from django.core.paginator import Paginator
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from .forms import ChangeRequestForm
+from .session_tracker import ChangeRequestTracker
 
 
 
@@ -41,6 +42,17 @@ def update_list(request):
         .order_by('-updated')
     )
     
+    change_requests = ChangeRequest.objects.all().order_by('-created')
+    tracker = ChangeRequestTracker(request)
+    for change_request in change_requests:
+        change_request.session_seen = change_request.request_number in tracker
+        change_request.session_status_changed = tracker.status_changed(change_request)
+        state = tracker.get_state(change_request.request_number)
+        change_request.session_last_status = state.get('last_status')
+
+    viewed_count = len(tracker)
+    viewed_is_high = tracker > 3
+    
     return render(
         request,
         'changelog/post/list.html',
@@ -50,6 +62,9 @@ def update_list(request):
             'requested': requested,
             'show_pending': show_pending,
             'show_denied': show_denied,
+            'change_requests': change_requests,
+            'viewed_count': viewed_count,
+            'viewed_is_high': viewed_is_high,
         }
     )
 
@@ -67,6 +82,42 @@ def update_detail(request, major_version, current_patch, bug_fix):
         request,
         'changelog/post/detail.html',
         {'update': update}
+    )
+
+
+def change_request_detail(request, request_number):
+    change_request = get_object_or_404(
+        ChangeRequest,
+        request_number=request_number
+    )
+    tracker = ChangeRequestTracker(request)
+    try:
+        state = tracker[change_request.request_number]
+    except KeyError:
+        state = {}
+
+    previous_status = state.get('last_status')
+    previously_seen = bool(state)
+    status_changed = bool(previous_status and previous_status != change_request.status)
+    previous_status_label = None
+    if previous_status:
+        try:
+            previous_status_label = ChangeRequest.Status(previous_status).label
+        except ValueError:
+            previous_status_label = previous_status
+
+    tracker.view(change_request)
+
+    return render(
+        request,
+        'changelog/post/change_request_detail.html',
+        {
+            'change_request': change_request,
+            'previous_status': previous_status,
+            'previous_status_label': previous_status_label,
+            'previously_seen': previously_seen,
+            'status_changed': status_changed,
+        }
     )
     
     

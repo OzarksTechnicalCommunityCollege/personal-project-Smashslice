@@ -13,6 +13,7 @@ class UpdateChangeRequestLinkInline(admin.TabularInline):
     model = UpdateChangeRequestLink
     extra = 0
     readonly_fields = ['linked_at']
+from .models import Update, ChangeRequest
 
 # Render updates on admin page for update creation and editing
 @admin.register(Update)
@@ -64,3 +65,6 @@ class UpdateChangeRequestLinkAdmin(admin.ModelAdmin):
     list_filter = ['marks_completed', 'linked_at']
     search_fields = ['update__title', 'change_request__subject']
     ordering = ['-linked_at']
+    list_display = ['request_number', 'subject', 'email', 'status', 'created']
+    list_filter = ['status', 'created', 'accepted_at', 'completed_at']
+    search_fields = ['subject', 'email', 'request_text']
