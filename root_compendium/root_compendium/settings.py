@@ -188,3 +188,6 @@ RABBITMQ_PORT = config('RABBITMQ_PORT', default=5672, cast=int)
 RABBITMQ_QUEUE = config('RABBITMQ_QUEUE', default='change_request_status')
 RABBITMQ_USER = config('RABBITMQ_USER', default='')
 RABBITMQ_PASSWORD = config('RABBITMQ_PASSWORD', default='')
+
+# GitHub API Token for changelog integration
+GITHUB_API_TOKEN = config('GITHUB_API_TOKEN', default=None)

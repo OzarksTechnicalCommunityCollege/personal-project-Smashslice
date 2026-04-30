@@ -1,3 +1,8 @@
+# Module 8 Update
+4/29/26
+
+Started GitHub integration for changelog. Added a service for fetching commits from the GitHub REST API, with token configuration via environment variable or settings. See `changelog/services/github_api.py` for details.
+
 # Module 7 Update
 4/28/26
 
@@ -36,3 +41,8 @@ Installed Ruff as the linter for the project and cleaned up a number of unused i
 - [ ] Tie change log to docs.md for automatic updates. 
 - [ ] Once the above functionality is completed, dump the database and produce new mock data. 
 - [ ] Wire RabbitMQ notifications in the refactor (enable feature flag, verify queue/email).
+- [ ] Add model for storing synced GitHub commits
+- [ ] Add admin action to trigger commit sync
+- [ ] Register commit model in admin
+- [ ] Display synced commits in changelog UI
+- [ ] Document integration steps and usage
