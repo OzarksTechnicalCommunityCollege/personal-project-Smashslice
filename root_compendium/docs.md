@@ -1,3 +1,22 @@
+# Module 8 Update
+4/29/26
+
+Started GitHub integration for changelog. Added a service for fetching commits from the GitHub REST API, with token configuration via environment variable or settings. See `changelog/services/github_api.py` for details.
+
+Added `GitHubCommit` model to store synced commits from GitHub, with fields for SHA, message, author, date, repo, and raw data. Migration created.
+
+Added admin integration for `GitHubCommit` with an admin action to sync commits from a GitHub repo. See admin panel for usage.
+
+Wired up a public view (`github_commit_list` in `views.py`) and URL (`/changelog/commits/` in `urls.py`) to display the 50 most recent synced GitHub commits using a new template (`commits.html`).
+
+## TODO
+- [ ] Make repo/owner configurable in admin action
+- [ ] Document integration steps and usage
+- [x] Add model for storing synced GitHub commits
+- [x] Add admin action to trigger commit sync
+- [x] Register commit model in admin
+- [x] Display synced commits in changelog UI
+
 # Module 7 Update
 4/28/26
 

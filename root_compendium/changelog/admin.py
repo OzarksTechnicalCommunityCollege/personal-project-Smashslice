@@ -1,4 +1,4 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 from .models import (
     ChangeRequest,
     ChangeRequestNotification,
@@ -6,7 +6,9 @@ from .models import (
     ChangeRequestTagAssignment,
     UpdateChangeRequestLink,
     Update,
+    GitHubCommit
 )
+from .services.github_api import GitHubAPIService
 
 
 class UpdateChangeRequestLinkInline(admin.TabularInline):
@@ -64,3 +66,50 @@ class UpdateChangeRequestLinkAdmin(admin.ModelAdmin):
     list_filter = ['marks_completed', 'linked_at']
     search_fields = ['update__title', 'change_request__subject']
     ordering = ['-linked_at']
+
+
+@admin.register(GitHubCommit)
+class GitHubCommitAdmin(admin.ModelAdmin):
+    list_display = [
+        'sha', 'message', 'author_name', 'date', 'repo_owner', 'repo_name', 'fetched_at'
+    ]
+    search_fields = ['sha', 'message', 'author_name', 'repo_owner', 'repo_name']
+    list_filter = ['repo_owner', 'repo_name', 'date']
+    ordering = ['-date']
+    actions = ['sync_github_commits']
+
+    def sync_github_commits(self, request, queryset):
+        """
+        Admin action to fetch and store recent commits from a configured GitHub repository.
+        """
+        # For demonstration purposes, hardcoded repo
+        owner = 'Smashslice'  # TODO: Make dynamic/configurable
+        repo = 'Changelog'  # TODO: Make dynamic/configurable
+        service = GitHubAPIService()
+        try:
+            commits = service.fetch_commits(owner, repo, per_page=10)
+            created, skipped = 0, 0
+            for c in commits:
+                sha = c['sha']
+                defaults = {
+                    'message': c['commit']['message'],
+                    'author_name': c['commit']['author'].get('name', ''),
+                    'author_email': c['commit']['author'].get('email', ''),
+                    'date': c['commit']['author']['date'],
+                    'repo_owner': owner,
+                    'repo_name': repo,
+                    'raw_data': c,
+                }
+                obj, was_created = GitHubCommit.objects.get_or_create(
+                    sha=sha, repo_owner=owner, repo_name=repo, defaults=defaults
+                )
+                if was_created:
+                    created += 1
+                else:
+                    skipped += 1
+            self.message_user(request, f"Fetched {created} new commits, {skipped} already existed.", messages.SUCCESS)
+        except Exception as e:
+            self.message_user(request, f"Error fetching commits: {e}", messages.ERROR)
+    sync_github_commits.short_description = "Sync latest commits from GitHub (demo repo)"
+
+# admin.site.register(GitHubCommit, GitHubCommitAdmin)

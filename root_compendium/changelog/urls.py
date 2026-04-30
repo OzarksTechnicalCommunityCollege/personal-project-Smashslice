@@ -22,4 +22,5 @@ urlpatterns = [
         views.update_change_request_status,
         name='change_request_update_status',
     ),
+    path('commits/', views.github_commit_list, name='github_commit_list'),
 ]
