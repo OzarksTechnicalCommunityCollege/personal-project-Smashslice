@@ -3,6 +3,8 @@
 
 Started GitHub integration for changelog. Added a service for fetching commits from the GitHub REST API, with token configuration via environment variable or settings. See `changelog/services/github_api.py` for details.
 
+Added `GitHubCommit` model to store synced commits from GitHub, with fields for SHA, message, author, date, repo, and raw data. Migration created.
+
 # Module 7 Update
 4/28/26
 

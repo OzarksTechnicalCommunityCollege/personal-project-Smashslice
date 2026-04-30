@@ -284,3 +284,29 @@ class UpdateChangeRequestLink(models.Model):
         return f'Update {self.update_id} -> request {self.change_request_id}'
         
     
+# Model for storing synced GitHub commits
+class GitHubCommit(models.Model):
+    """
+    Represents a commit fetched from a GitHub repository for changelog integration.
+    Stores commit SHA, message, author, date, and repository info.
+    """
+    sha = models.CharField(max_length=40, unique=True, help_text="Commit SHA (unique per repo)")
+    message = models.TextField(help_text="Commit message")
+    author_name = models.CharField(max_length=100, help_text="Author's GitHub username")
+    author_email = models.EmailField(blank=True, null=True, help_text="Author's email (if available)")
+    date = models.DateTimeField(help_text="Commit date/time (UTC)")
+    repo_owner = models.CharField(max_length=100, help_text="GitHub repository owner")
+    repo_name = models.CharField(max_length=100, help_text="GitHub repository name")
+    raw_data = models.JSONField(blank=True, null=True, help_text="Raw commit data from GitHub API")
+    fetched_at = models.DateTimeField(auto_now_add=True, help_text="When this commit was fetched from GitHub")
+
+    class Meta:
+        unique_together = ("sha", "repo_owner", "repo_name")
+        ordering = ["-date"]
+        indexes = [
+            models.Index(fields=["-date"]),
+            models.Index(fields=["repo_owner", "repo_name"]),
+        ]
+
+    def __str__(self):
+        return f"{self.sha[:7]}: {self.message[:50]}... ({self.repo_owner}/{self.repo_name})"
