@@ -11,7 +11,23 @@ from changelog.models import ChangeRequestNotification
 
 # Auth Views
 
+
 def user_login(request):
+    """
+    Handle user login via POST or display login form via GET.
+
+    Inputs:
+        - request.method: 'POST' or 'GET'
+        - request.POST: login form data (if POST)
+
+    Outputs:
+        - On valid login: returns HttpResponse with success message
+        - On invalid login: returns HttpResponse with error message
+        - On GET: renders 'users/login.html' with LoginForm
+
+    Error Handling:
+        - Returns error messages for invalid or disabled accounts.
+    """
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
@@ -33,7 +49,19 @@ def user_login(request):
         form = LoginForm() 
     return render(request, 'users/login.html', {'form': form})
 
+
 def register(request):
+    """
+    Handle user registration via POST or display registration form via GET.
+
+    Inputs:
+        - request.method: 'POST' or 'GET'
+        - request.POST: registration form data (if POST)
+
+    Outputs:
+        - On successful registration: renders 'users/register_done.html' with new_user
+        - On GET or invalid form: renders 'users/register.html' with UserRegistrationForm
+    """
     if request.method == 'POST':
         user_form = UserRegistrationForm(request.POST)
         if user_form.is_valid():
@@ -56,11 +84,25 @@ def register(request):
         {'user_form': user_form}
     )
 
+
 @login_required
 def dashboard(request):
+    """
+    Display the user dashboard with recent change request notifications.
+
+    Inputs:
+        - request.user: current authenticated user
+
+    Outputs:
+        - Renders 'users/dashboard.html' with:
+            - section: 'dashboard'
+            - notifications: up to 10 recent ChangeRequestNotification objects
+
+    Error Handling:
+        - Uses cache to optimize notification queries.
+    """
     cache_key = f'user:{request.user.id}:dashboard_notifications'
     notifications = cache.get(cache_key)
-
     if notifications is None:
         notifications = list(
             ChangeRequestNotification.objects
@@ -68,7 +110,6 @@ def dashboard(request):
             .select_related('change_request', 'related_update')[:10]
         )
         cache.set(cache_key, notifications, 60)
-
     return render(
         request,
         'users/dashboard.html',

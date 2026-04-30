@@ -1,3 +1,8 @@
+# Module 9 Update
+4/30/26
+
+Added comprehensive docstrings and inline comments to all views in `changelog/views.py` and `users/views.py` for improved clarity & maintainability. Each view now documents its purpose, inputs, outputs, and error handling.
+
 # Module 8 Update
 4/29/26
 

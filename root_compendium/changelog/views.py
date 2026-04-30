@@ -15,6 +15,25 @@ from .session_tracker import ChangeRequestTracker
 
 # Render post list
 def update_list(request):
+    """
+    Display a paginated list of published updates and change requests.
+
+    Inputs:
+        - request.GET['page']: (optional) page number for pagination
+        - request.GET['show_pending']: (optional) show pending requests
+        - request.GET['show_denied']: (optional) show denied requests
+
+    Outputs:
+        - Renders 'changelog/post/list.html' with:
+            - updates: paginated Update objects
+            - form: ChangeRequestForm instance
+            - requested: filtered ChangeRequest queryset
+            - show_pending, show_denied: filter flags
+            - viewed_count, viewed_is_high: session stats
+
+    Error Handling:
+        - Defaults to first page if page param is invalid.
+    """
     update_list = Update.published.all()
     
     paginator = Paginator(update_list, 5)
@@ -68,6 +87,19 @@ def update_list(request):
     
 # Render indivdual post details
 def update_detail(request, major_version, current_patch, bug_fix):
+    """
+    Display details for a single published update.
+
+    Inputs:
+        - major_version, current_patch, bug_fix: version identifiers (URL params)
+
+    Outputs:
+        - Renders 'changelog/post/detail.html' with:
+            - update: Update object
+
+    Error Handling:
+        - Raises 404 if update not found or not published.
+    """
     update = get_object_or_404(
         Update,
         major_version=major_version,
@@ -83,6 +115,23 @@ def update_detail(request, major_version, current_patch, bug_fix):
 
 
 def change_request_detail(request, request_number):
+    """
+    Display details for a single change request, including session-based view state.
+
+    Inputs:
+        - request_number: primary key of the ChangeRequest (URL param)
+
+    Outputs:
+        - Renders 'changelog/post/change_request_detail.html' with:
+            - change_request: ChangeRequest object
+            - previous_status: last status seen in session
+            - previous_status_label: label for last status
+            - previously_seen: whether this request was seen in session
+            - status_changed: whether status changed since last view
+
+    Error Handling:
+        - Raises 404 if change request not found.
+    """
     change_request = get_object_or_404(
         ChangeRequest,
         request_number=request_number
@@ -121,6 +170,20 @@ def change_request_detail(request, request_number):
     
 @require_POST
 def post_change_request(request):
+    """
+    Handle submission of a new change request via POST.
+
+    Inputs:
+        - request.POST: form data for ChangeRequestForm
+
+    Outputs:
+        - Renders 'changelog/post/change_request.html' with:
+            - form: ChangeRequestForm instance (bound)
+            - change_request: newly created ChangeRequest or None if invalid
+
+    Error Handling:
+        - If form is invalid, re-renders form with errors.
+    """
     change_request = None
     form = ChangeRequestForm(data=request.POST)
     
@@ -145,6 +208,20 @@ def post_change_request(request):
 @login_required
 @require_POST
 def update_change_request_status(request, request_number):
+    """
+    Staff-only view to update the status of a change request.
+
+    Inputs:
+        - request.POST['status']: new status value
+        - request.user: must be staff
+        - request_number: primary key of ChangeRequest (URL param)
+
+    Outputs:
+        - Redirects to changelog:update_list after update
+
+    Error Handling:
+        - Raises 404 if not staff, invalid status, or change request not found.
+    """
     if not request.user.is_staff:
         raise Http404
 
@@ -163,7 +240,14 @@ def update_change_request_status(request, request_number):
 
 def github_commit_list(request):
     """
-    View to display recent synced GitHub commits.
+    Display the 50 most recent synced GitHub commits.
+
+    Inputs:
+        - None (GET only)
+
+    Outputs:
+        - Renders 'changelog/commits.html' with:
+            - commits: list of GitHubCommit objects
     """
     commits = GitHubCommit.objects.order_by('-date')[:50]
     return render(request, 'changelog/commits.html', {'commits': commits})
