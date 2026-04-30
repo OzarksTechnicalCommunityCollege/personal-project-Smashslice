@@ -3,6 +3,8 @@
 
 Added comprehensive docstrings and inline comments to all views in `changelog/views.py` and `users/views.py` for improved clarity & maintainability. Each view now documents its purpose, inputs, outputs, and error handling.
 
+Minor template improvement: Added a fallback to the changelog for the "Back" button in update and change request detail views to ensure consistent navigation. All templates reviewed for layout, styling, and navigation consistency.
+
 # Module 8 Update
 4/29/26
 

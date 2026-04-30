@@ -27,7 +27,8 @@
       </div>
 
       <div class="button-container">
-        <a href="{% url 'changelog:update_list' %}" class="back-button">Back</a>
+        {% url 'changelog:update_list' as changelog_url %}
+        <a href="{{ request.META.HTTP_REFERER|default:changelog_url|escape }}" class="back-button">Back</a>
       </div>
     </div>
   </div>
