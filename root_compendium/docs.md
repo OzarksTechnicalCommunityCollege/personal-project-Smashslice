@@ -5,6 +5,13 @@ Started GitHub integration for changelog. Added a service for fetching commits f
 
 Added `GitHubCommit` model to store synced commits from GitHub, with fields for SHA, message, author, date, repo, and raw data. Migration created.
 
+Added admin integration for `GitHubCommit` with an admin action to sync commits from a GitHub repo. See admin panel for usage.
+
+## TODO
+- [ ] Make repo/owner configurable in admin action
+- [ ] Display synced commits in changelog UI
+- [ ] Document integration steps and usage
+
 # Module 7 Update
 4/28/26
 
