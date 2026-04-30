@@ -112,4 +112,4 @@ class GitHubCommitAdmin(admin.ModelAdmin):
             self.message_user(request, f"Error fetching commits: {e}", messages.ERROR)
     sync_github_commits.short_description = "Sync latest commits from GitHub (demo repo)"
 
-admin.site.register(GitHubCommit, GitHubCommitAdmin)
+# admin.site.register(GitHubCommit, GitHubCommitAdmin)

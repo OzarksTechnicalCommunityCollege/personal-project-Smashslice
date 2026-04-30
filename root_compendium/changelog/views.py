@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404, redirect, render
-from .models import Update, ChangeRequest
+from .models import Update, ChangeRequest, GitHubCommit
 from django.http import Http404
 from django.core.paginator import Paginator
 from django.views.decorators.http import require_POST
@@ -160,3 +160,10 @@ def update_change_request_status(request, request_number):
         change_request.save()
 
     return redirect('changelog:update_list')
+
+def github_commit_list(request):
+    """
+    View to display recent synced GitHub commits.
+    """
+    commits = GitHubCommit.objects.order_by('-date')[:50]
+    return render(request, 'changelog/commits.html', {'commits': commits})

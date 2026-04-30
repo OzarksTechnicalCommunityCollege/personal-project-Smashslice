@@ -1,0 +1,31 @@
+{% extends "changelog/base.html" %}
+
+{% block title %}GitHub Commits{% endblock %}
+
+{% block content %}
+  <h1>Recent GitHub Commits</h1>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>SHA</th>
+        <th>Message</th>
+        <th>Author</th>
+        <th>Date</th>
+        <th>Repo</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for commit in commits %}
+      <tr>
+        <td><code>{{ commit.sha|slice:":7" }}</code></td>
+        <td>{{ commit.message|truncatechars:60 }}</td>
+        <td>{{ commit.author_name }}</td>
+        <td>{{ commit.date|date:"Y-m-d H:i" }}</td>
+        <td>{{ commit.repo_owner }}/{{ commit.repo_name }}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="5">No commits found.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
