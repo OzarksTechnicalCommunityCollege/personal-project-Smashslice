@@ -21,6 +21,13 @@
           Published {{ update.publish }} by {{ update.author }}
         </p>
         <p>Update Type: {{ update.change_type }} - Automated update: {{ update.automated_post }}</p>
+        {% if update.tags.exists %}
+          <p>Tags:
+            {% for tag in update.tags.all %}
+              <span class="tag">{{ tag.label }}</span>{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+          </p>
+        {% endif %}
       </div>
     {% endfor %}
     

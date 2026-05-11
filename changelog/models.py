@@ -83,6 +83,15 @@ class Update(models.Model):
         blank=True,
     )
     
+
+    # Tags for this update (new feature)
+    tags = models.ManyToManyField(
+        'UpdateTag',
+        through='UpdateUpdateTagAssignment',
+        related_name='updates',
+        blank=True,
+    )
+
     # Meta rule for handling sorting
     class Meta:
         ordering = ['-publish']
@@ -261,6 +270,39 @@ class ChangeRequestNotification(models.Model):
 
     def __str__(self):
         return f'Notification for {self.user_id} on request {self.change_request_id}'
+
+class UpdateTag(models.Model):
+    code = models.CharField(max_length=32, unique=True)
+    label = models.CharField(max_length=32)
+
+    class Meta:
+        ordering = ['label']
+
+    def __str__(self):
+        return self.label
+
+# Tag assignment for updates
+class UpdateUpdateTagAssignment(models.Model):
+    update = models.ForeignKey(Update, on_delete=models.CASCADE)
+    tag = models.ForeignKey(UpdateTag, on_delete=models.CASCADE)
+    assigned_at = models.DateTimeField(auto_now_add=True)
+    assigned_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='assigned_update_tags',
+    )
+
+    class Meta:
+        ordering = ['-assigned_at']
+        indexes = [
+            models.Index(fields=['update', '-assigned_at']),
+        ]
+
+    def __str__(self):
+        return f'{self.update_id} -> {self.tag.label}'
+
 
 
 class UpdateChangeRequestLink(models.Model):

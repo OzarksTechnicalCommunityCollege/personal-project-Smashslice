@@ -6,9 +6,17 @@ from .models import (
     ChangeRequestTagAssignment,
     UpdateChangeRequestLink,
     Update,
-    GitHubCommit
+    GitHubCommit,
+    UpdateTag,
+    UpdateUpdateTagAssignment,
 )
 from .services.github_api import GitHubAPIService
+
+class UpdateUpdateTagAssignmentInline(admin.TabularInline):
+    model = UpdateUpdateTagAssignment
+    extra = 0
+    readonly_fields = ['assigned_at']
+
 
 
 class UpdateChangeRequestLinkInline(admin.TabularInline):
@@ -17,6 +25,7 @@ class UpdateChangeRequestLinkInline(admin.TabularInline):
     readonly_fields = ['linked_at']
 
 # Render updates on admin page for update creation and editing
+
 @admin.register(Update)
 class UpdateAdmin(admin.ModelAdmin):
     list_display = ['title', 'slug', 'author', 'publish', 'status']
@@ -27,7 +36,11 @@ class UpdateAdmin(admin.ModelAdmin):
     date_hierarchy = 'publish'
     ordering = ['status', 'publish']
     show_facets = admin.ShowFacets.ALWAYS
-    inlines = [UpdateChangeRequestLinkInline]
+    inlines = [UpdateChangeRequestLinkInline, UpdateUpdateTagAssignmentInline]
+@admin.register(UpdateTag)
+class UpdateTagAdmin(admin.ModelAdmin):
+    list_display = ['label', 'code']
+    search_fields = ['label', 'code']
 
 
 class ChangeRequestTagAssignmentInline(admin.TabularInline):

@@ -13,6 +13,14 @@
         Published {{ update.publish }} by {{ update.author }}
       </p>
       
+      {% if update.tags.exists %}
+        <div class="tags">
+          <strong>Tags:</strong>
+          {% for tag in update.tags.all %}
+            <span class="tag">{{ tag.label }}</span>{% if not forloop.last %}, {% endif %}
+          {% endfor %}
+        </div>
+      {% endif %}
       <div class="button-container">
         {% url 'changelog:update_list' as changelog_url %}
         <a href="{{ request.META.HTTP_REFERER|default:changelog_url|escape }}" class="back-button">Back</a>

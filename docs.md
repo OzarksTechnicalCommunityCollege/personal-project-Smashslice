@@ -1,3 +1,25 @@
+# Refactor — Update Tagging System
+5/11/26
+
+Added tagging support for updates as the first post-parity design doc feature.
+
+New `UpdateTag` model with `code` and `label` fields lives in `changelog/models.py`.
+Updates relate to tags via M2M through an explicit `UpdateUpdateTagAssignment`
+join model, which tracks assignment metadata (who assigned, when). This keeps
+the M2M auditable and leaves room for filtering by tag type later (useful for
+the commit-count chart).
+
+Admin updated to support inline tag assignment when editing an Update.
+`UpdateForm` updated to include tag assignment via checkboxes. Tags are
+displayed in both the changelog list and detail templates.
+
+Migration required: `python manage.py makemigrations changelog && python manage.py migrate`.
+Existing updates will have no tags by default.
+
+## TODO
+- [ ] Assign tags to existing updates via admin after migrating.
+- [ ] Verify tag display in list and detail views after first migration run.
+
 # Refactor — Operational Parity & RabbitMQ Cleanup
 5/11/26
 
