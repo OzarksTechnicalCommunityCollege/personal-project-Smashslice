@@ -1,0 +1,118 @@
+{% extends "changelog/base.html" %}
+{% block title %}Changelog{% endblock %}
+{% block content %}
+
+<div class="page-container">
+  <!-- Changelog Section -->
+  <section class="changelog-section">
+    <div class="section-header changelog-header">
+      <h2>Changelog</h2>
+    </div>
+    
+    {% for update in updates %}
+      <div class="update-card">
+        <h3>
+          <a href="{{ update.get_absolute_url }}">
+            {{ update.title }} - {{ update.version }}
+          </a>
+        </h3>
+        {{ update.body|truncatewords:30|linebreaks }}
+        <p class="date">
+          Published {{ update.publish }} by {{ update.author }}
+        </p>
+        <p>Update Type: {{ update.change_type }} - Automated update: {{ update.automated_post }}</p>
+      </div>
+    {% endfor %}
+    
+    <!-- {% include 'changelog/includes/_updates_placeholder.html' %} -->
+    {% include 'includes/_pagination.html' with page=updates %}
+  </section>
+  
+  <!-- Todo List Section -->
+  <aside class="todo-section">
+    <div class="section-header todo-header">
+      <h2>To Do List</h2>
+    </div>
+    
+    {% include 'changelog/includes/_todo_placeholder.html' %}
+  </aside>
+  
+  <!-- Change Requests Section -->
+  <aside class="changes-section">
+    <div class="section-header changes-header">
+      <h2>Change Requests</h2>
+      <p class="section-subtitle">
+        Seen {{ viewed_count }} request{{ viewed_count|pluralize }}
+        {% if viewed_is_high %}
+          <span class="badge badge-highlight">Active</span>
+        {% endif %}
+      </p>
+    </div>
+    <div class="changes-filters">
+      <a
+        href="?show_pending={% if show_pending %}0{% else %}1{% endif %}{% if show_denied %}&show_denied=1{% endif %}"
+        class="nav-button"
+      >
+        {% if show_pending %}Hide Pending{% else %}Show Pending{% endif %}
+      </a>
+      <a
+        href="?show_denied={% if show_denied %}0{% else %}1{% endif %}{% if show_pending %}&show_pending=1{% endif %}"
+        class="nav-button"
+      >
+        {% if show_denied %}Hide Denied{% else %}Show Denied{% endif %}
+      </a>
+    </div>
+
+    {% for change_request in requested %}
+      <div class="changes-card">
+        <p>
+          <strong>
+            <a href="{% url 'changelog:change_request_detail' change_request.request_number %}">
+              {{ change_request.subject }}
+            </a>
+          </strong>
+        </p>
+        <div class="changes-meta">
+          <span class="badge badge-status">{{ change_request.get_status_display }}</span>
+          {% if change_request.session_status_changed %}
+            <span class="badge badge-changed">Status changed</span>
+          {% elif change_request.session_seen %}
+            <span class="badge badge-seen">Seen</span>
+          {% else %}
+            <span class="badge badge-new">New</span>
+          {% endif %}
+        </div>
+        <p>Updated: {{ change_request.updated }}</p>
+        <p>{{ change_request.request_text|truncatewords:20 }}</p>
+
+        {% if request.user.is_staff %}
+          <div class="status-actions">
+            {% if change_request.status == 'P' %}
+              <form method="post" action="{% url 'changelog:change_request_update_status' change_request.request_number %}">
+                {% csrf_token %}
+                <input type="hidden" name="status" value="I">
+                <button type="submit">Mark In Progress</button>
+              </form>
+              <form method="post" action="{% url 'changelog:change_request_update_status' change_request.request_number %}">
+                {% csrf_token %}
+                <input type="hidden" name="status" value="D">
+                <button type="submit">Deny</button>
+              </form>
+            {% elif change_request.status == 'I' %}
+              <form method="post" action="{% url 'changelog:change_request_update_status' change_request.request_number %}">
+                {% csrf_token %}
+                <input type="hidden" name="status" value="C">
+                <button type="submit">Complete</button>
+              </form>
+            {% endif %}
+          </div>
+        {% endif %}
+      </div>
+    {% endfor %}
+    {% include 'changelog/includes/_change_request_form.html' %}
+
+    <!-- {% include 'changelog/includes/_requests_placeholder.html' %} -->
+  </aside>
+</div>
+
+{% endblock %}

@@ -1,0 +1,18 @@
+
+{% extends "changelog/base.html" %}
+
+{% block title %}Submit a change request{% endblock %}
+
+{% block content %}
+
+ {% if change_request %}
+
+ <h2>Your change request has been submitted.</h2>
+
+ {% else %}
+
+ {% include "changelog/includes/_change_request_form.html" %}
+
+ {% endif %}
+
+{% endblock %}

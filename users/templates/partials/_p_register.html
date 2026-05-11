@@ -1,0 +1,27 @@
+<div class="modal" id="register-modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Create an Account</h2>
+      <button type="button" class="modal-close" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
+      {% if user_form.errors %}
+        <p class="error-message">
+          Please correct the errors below.
+        </p>
+      {% else %}
+        <p>
+          Please sign up using the following form.
+          Already have an account? <a href="#" data-modal-url="{% url "users:login_modal" %}">Log in here</a>.
+        </p>
+      {% endif %}
+      <div class="register-form">
+        <form action="{% url 'users:register_modal' %}" method="post" data-modal-form>
+          {{ user_form.as_p }}
+          {% csrf_token %}
+          <p><input type="submit" value="Create my account"></p>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

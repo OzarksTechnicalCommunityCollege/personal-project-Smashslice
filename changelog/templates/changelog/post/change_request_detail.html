@@ -1,0 +1,35 @@
+{% extends "changelog/base.html" %}
+{% block title %}Change Request {{ change_request.request_number }}{% endblock %}
+{% block content %}
+  <div class="detail-container">
+    <div class="detail-header">
+      <h1>Change Request #{{ change_request.request_number }}</h1>
+    </div>
+
+    <div class="detail-card">
+      <h2>{{ change_request.subject }}</h2>
+      <p><strong>Status:</strong> {{ change_request.get_status_display }}</p>
+      <p><strong>Submitted by:</strong> {{ change_request.email }}</p>
+      {{ change_request.request_text|linebreaks }}
+
+      <div class="changes-meta">
+        {% if previously_seen %}
+          <span class="badge badge-seen">Seen</span>
+          {% if status_changed %}
+            <span class="badge badge-changed">Status changed since last view</span>
+          {% endif %}
+          {% if previous_status_label %}
+            <span class="badge badge-status">Last seen: {{ previous_status_label }}</span>
+          {% endif %}
+        {% else %}
+          <span class="badge badge-new">First view</span>
+        {% endif %}
+      </div>
+
+      <div class="button-container">
+        {% url 'changelog:update_list' as changelog_url %}
+        <a href="{{ request.META.HTTP_REFERER|default:changelog_url|escape }}" class="back-button">Back</a>
+      </div>
+    </div>
+  </div>
+{% endblock %}

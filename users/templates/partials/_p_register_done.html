@@ -1,0 +1,17 @@
+<div class="modal" id="register-done-modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Welcome!</h2>
+      <button type="button" class="modal-close" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p>
+        Welcome {{ new_user.first_name|default:new_user.username }}!
+      </p>
+      <p>
+        Your account has been successfully created.
+        You can now <a href="#" data-modal-url="{% url "users:login_modal" %}">log in</a>.
+      </p>
+    </div>
+  </div>
+</div>

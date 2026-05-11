@@ -1,0 +1,22 @@
+{% extends "changelog/base.html" %}
+{% block title %}{{ update.title }}{% endblock %}
+{% block content %}
+  <div class="detail-container">
+    <div class="detail-header">
+      <h1>{{ update.title }} - {{ update.version }}</h1>
+    </div>
+    
+    <div class="detail-card">
+      <h2>{{ update.change_type }} - Automated update: {{ update.automated_post }}</h2>
+      {{ update.body|linebreaks }}
+      <p class="date">
+        Published {{ update.publish }} by {{ update.author }}
+      </p>
+      
+      <div class="button-container">
+        {% url 'changelog:update_list' as changelog_url %}
+        <a href="{{ request.META.HTTP_REFERER|default:changelog_url|escape }}" class="back-button">Back</a>
+      </div>
+    </div>
+  </div>
+{% endblock %}

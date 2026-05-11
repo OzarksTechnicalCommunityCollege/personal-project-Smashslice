@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+  <h1>Dashboard</h1>
+  <p>Welcome, {{ user.username }}! You can <a href="{% url "users:edit" %}">edit your profile</a> or .</p>
+  <p><a href="{% url "users:password_reset" %}">change your password</a></p>
+  <form method="post" action="{% url 'logout' %}" style="display: inline;">
+      {% csrf_token %}
+      <button type="submit" style="background: none; border: none; color: blue; cursor: pointer; text-decoration: underline;">
+          Logout
+      </button>
+  </form>
+
+  <h2>Change Request Updates</h2>
+  {% if notifications %}
+    <ul>
+      {% for notification in notifications %}
+        <li>
+          {{ notification.message }}
+          {% if notification.related_update %}
+            <a href="{{ notification.related_update.get_absolute_url }}">View update</a>
+          {% endif %}
+          ({{ notification.created }})
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No status updates yet.</p>
+  {% endif %}
+{% endblock %}
