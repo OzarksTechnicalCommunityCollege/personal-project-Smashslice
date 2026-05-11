@@ -30,6 +30,7 @@ def user_login(request):
     """
     if request.method == 'POST':
         form = LoginForm(request.POST)
+        user = None
         if form.is_valid():
             cd = form.cleaned_data
             user = authenticate(

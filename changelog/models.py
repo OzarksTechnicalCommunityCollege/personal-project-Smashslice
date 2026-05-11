@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
 
@@ -88,6 +89,21 @@ class Update(models.Model):
         indexes = [
             models.Index(fields=['-publish']),
         ]
+
+    def clean(self):
+        super().clean()
+        errors = {}
+        for field_name in ('major_version', 'current_patch', 'bug_fix'):
+            value = getattr(self, field_name)
+            try:
+                numeric_value = int(value)
+            except (TypeError, ValueError):
+                errors[field_name] = 'Must be a non-negative integer.'
+                continue
+            if numeric_value < 0:
+                errors[field_name] = 'Must be a non-negative integer.'
+        if errors:
+            raise ValidationError(errors)
         
     def __str__(self):
         return self.title

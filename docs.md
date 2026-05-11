@@ -1,3 +1,28 @@
+# Refactor — Parity Bug Fixes
+5/11/26
+
+Parity bug fix commit. No behavior changes intended — all edits correct latent
+issues carried over from the legacy project.
+
+Added `clean()` to the `Update` model enforcing non-negative integers on
+`major_version`, `current_patch`, and `bug_fix`. No migration needed as this
+is validation-only. Any fixtures using non-numeric version part values (e.g.
+`a`, `b`, `c`) will need to be updated before loading.
+
+Fixed a control-flow bug in `user_login` (`users/views.py:31-48`) where `user`
+could be referenced before assignment if form validation failed. Variable is
+now initialized before the conditional block.
+
+Removed the RabbitMQ publish hook and its `RABBITMQ_ENABLED` guard from
+`signals.py`. Signals now fire unconditionally. The `pika` import is gone from
+app startup. `rabbitmq.py` and RabbitMQ settings in `settings.py` are deferred
+to Step 4 (operational parity cleanup) to keep this commit focused.
+
+## TODO
+- [ ] Update fixtures with non-numeric version part values before loading test data.
+- [ ] Confirm `Update.clean()` behavior via a quick admin form save.
+- [ ] (Step 4) Remove `rabbitmq.py` and strip RabbitMQ settings from `settings.py`.
+
 # Module 9 Update
 4/30/26
 
