@@ -1,3 +1,48 @@
+# Refactor — Operational Parity & RabbitMQ Cleanup
+5/11/26
+
+Completed operational parity. Removed all RabbitMQ artifacts from the refactor
+since the stack uses Redis, not RabbitMQ.
+
+Deleted `changelog/rabbitmq.py` and the `consume_change_request_notifications`
+management command. Stripped RabbitMQ connection settings from `settings.py`;
+general email config retained. Signals were already wired unconditionally in
+the parity bug fix commit — this commit removes the remaining dead code.
+
+Parity phase is now complete. The refactor matches legacy behavior with the
+following intentional corrections carried forward:
+- `Update.clean()` enforcing non-negative version part integers
+- `user_login` control-flow fix
+- `base.html` CSS reference corrected to `styles.css`
+- `select_related('author')` removed from notification query
+- Signals fire unconditionally without RabbitMQ feature flag
+
+# Refactor — Template, View & Admin Parity
+5/11/26
+
+Completed template, view, and admin parity pass against the legacy project.
+All files confirmed matching except where parity bug fixes were already applied
+in the previous commit.
+
+Template parity confirmed across all changelog and users templates. One legacy
+bug corrected: `base.html` referenced `css/base.css`, which never existed in
+either project — only `styles.css` exists. The refactor correctly points to
+`styles.css` and this is kept as a parity bug fix rather than replicating the
+broken reference.
+
+View parity confirmed. `users/views.py` differs from legacy only in the two
+fixes already logged: the `user_login` control-flow fix and the removal of the
+invalid `select_related('author')` call on `ChangeRequestNotification`.
+`changelog/views.py` matches legacy exactly.
+
+Admin parity confirmed. `changelog/admin.py` matches legacy exactly.
+`users/admin.py` is an empty stub, matching legacy.
+
+URL and settings parity confirmed. All `urls.py` and `settings.py` files match
+legacy exactly. No changes needed.
+
+No new changes made in this commit — parity verification only.
+
 # Refactor — Parity Bug Fixes
 5/11/26
 
