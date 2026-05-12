@@ -1,3 +1,14 @@
+# Refactor — Tests
+5/12/26
+
+Added tests to `changelog/tests.py` covering `Update` versioning logic
+(non-negative integer validation via `clean()`) and `ChangeRequest` status
+transitions. Auth and API permission tests are deferred until after the
+`requests` app split, when the URL structure is stable.
+
+## TODO
+- [ ] Add auth and API permission tests after `requests` app split.
+
 # Refactor — Dynamic Search
 5/11/26
 
