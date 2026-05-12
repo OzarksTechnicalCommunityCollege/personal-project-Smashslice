@@ -58,6 +58,31 @@ class ChangeRequestAdmin(admin.ModelAdmin):
     inlines = [ChangeRequestTagAssignmentInline]
     ordering = ['-updated']
 
+    actions = ['export_as_csv', 'export_as_json']
+
+    def export_as_csv(self, request, queryset):
+        import csv
+        from django.http import HttpResponse
+        meta = self.model._meta
+        field_names = [field.name for field in meta.fields]
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = f'attachment; filename=changerequests.csv'
+        writer = csv.writer(response)
+        writer.writerow(field_names)
+        for obj in queryset:
+            writer.writerow([getattr(obj, field) for field in field_names])
+        return response
+    export_as_csv.short_description = "Export Selected as CSV"
+
+    def export_as_json(self, request, queryset):
+        from django.http import HttpResponse
+        import json
+        data = list(queryset.values())
+        response = HttpResponse(json.dumps(data, indent=2), content_type='application/json')
+        response['Content-Disposition'] = f'attachment; filename=changerequests.json'
+        return response
+    export_as_json.short_description = "Export Selected as JSON"
+
 
 @admin.register(ChangeRequestTag)
 class ChangeRequestTagAdmin(admin.ModelAdmin):
