@@ -47,7 +47,7 @@
     <tbody>
       {% for commit in commits %}
       <tr>
-        <td><code>{{ commit.sha|slice":7" }}</code></td>
+        {% comment %} <td><code>{{ commit.sha|slice":7" }}</code></td> {% endcomment %}
         <td>{{ commit.message|truncatechars:60 }}</td>
         <td>{{ commit.author_name }}</td>
         <td>{{ commit.date|date:"Y-m-d H:i" }}</td>
