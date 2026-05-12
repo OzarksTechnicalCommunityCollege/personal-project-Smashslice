@@ -1,3 +1,6 @@
+# Refactor notes
+Done to complete neccesary changes to fulfill design document and for module 10 onwards.
+
 # Refactor — Tests
 5/12/26
 
