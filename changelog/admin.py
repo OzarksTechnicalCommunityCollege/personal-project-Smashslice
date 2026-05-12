@@ -66,7 +66,7 @@ class ChangeRequestAdmin(admin.ModelAdmin):
         meta = self.model._meta
         field_names = [field.name for field in meta.fields]
         response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = f'attachment; filename=changerequests.csv'
+        response['Content-Disposition'] = 'attachment; filename=changerequests.csv'
         writer = csv.writer(response)
         writer.writerow(field_names)
         for obj in queryset:
@@ -79,7 +79,7 @@ class ChangeRequestAdmin(admin.ModelAdmin):
         import json
         data = list(queryset.values())
         response = HttpResponse(json.dumps(data, indent=2), content_type='application/json')
-        response['Content-Disposition'] = f'attachment; filename=changerequests.json'
+        response['Content-Disposition'] = 'attachment; filename=changerequests.json'
         return response
     export_as_json.short_description = "Export Selected as JSON"
 
