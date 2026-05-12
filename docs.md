@@ -1,3 +1,19 @@
+# Refactor — Admin Exports & Commit-Count Chart
+5/11/26
+
+Added CSV and JSON export actions for `ChangeRequest` in `changelog/admin.py`.
+Both actions are available via the Django admin action dropdown when one or more
+change requests are selected. Exported fields match the `ChangeRequest` model.
+
+Added a dynamic commit-count chart to the GitHub commits page. Chart.js renders
+a line chart of commits per day above the existing commits table, pulling from
+stored `GitHubCommit` data. No additional model changes or migrations needed —
+the chart is driven by the existing `GitHubCommit` queryset in the commits view.
+
+## TODO
+- [ ] Make GitHub repo owner/name configurable in the admin sync action
+      (carried forward from Module 8).
+
 # Refactor — Update Tagging System
 5/11/26
 

@@ -4,6 +4,36 @@
 
 {% block content %}
   <h1>Recent GitHub Commits</h1>
+  <h2>Commit Count Chart</h2>
+  <canvas id="commitChart" width="800" height="400"></canvas>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    fetch("/changelog/api/commit-counts/")
+      .then(response => response.json())
+      .then(data => {
+        const ctx = document.getElementById('commitChart').getContext('2d');
+        new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: data.labels,
+            datasets: [{
+              label: 'Commits per Day',
+              data: data.counts,
+              borderColor: 'rgba(75, 192, 192, 1)',
+              backgroundColor: 'rgba(75, 192, 192, 0.2)',
+              fill: true,
+              tension: 0.1
+            }]
+          },
+          options: {
+            scales: {
+              x: { title: { display: true, text: 'Date' } },
+              y: { title: { display: true, text: 'Commits' }, beginAtZero: true }
+            }
+          }
+        });
+      });
+  </script>
   <table class="table">
     <thead>
       <tr>
@@ -17,7 +47,7 @@
     <tbody>
       {% for commit in commits %}
       <tr>
-        <td><code>{{ commit.sha|slice:":7" }}</code></td>
+        <td><code>{{ commit.sha|slice":7" }}</code></td>
         <td>{{ commit.message|truncatechars:60 }}</td>
         <td>{{ commit.author_name }}</td>
         <td>{{ commit.date|date:"Y-m-d H:i" }}</td>

@@ -2,6 +2,7 @@ from django.urls import path
 from rest_framework.routers import DefaultRouter
 from . import views
 from .api import UpdateViewSet, ChangeRequestViewSet
+from .chart_api import CommitCountChartView
 
 app_name = 'changelog'
 
@@ -28,6 +29,7 @@ urlpatterns = [
         name='change_request_update_status',
     ),
     path('commits/', views.github_commit_list, name='github_commit_list'),
+    path('api/commit-counts/', CommitCountChartView.as_view(), name='commit_count_chart_api'),
 ]
 
 # Add DRF API routes
