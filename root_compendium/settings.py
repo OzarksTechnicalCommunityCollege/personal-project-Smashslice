@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework'
 ]
 # Sanity check for when we eventually have a production and development environment, checks to make sure we are in dev before enabling toolbar
 if DEBUG and config('ENABLE_DEBUG_TOOLBAR', default=True, cast=bool):
