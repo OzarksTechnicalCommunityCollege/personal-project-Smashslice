@@ -1,0 +1,25 @@
+{% if query %}
+  <h3>Search Results for "{{ query }}"</h3>
+  {% if results %}
+    <ul class="update-search-results">
+      {% for update in results %}
+        <li>
+          <a href="{{ update.get_absolute_url }}">{{ update.title }} - {{ update.version }}</a>
+          <span class="search-snippet">{{ update.body|truncatewords:20 }}</span>
+          {% if update.tags.exists %}
+            <span class="search-tags">
+              Tags:
+              {% for tag in update.tags.all %}
+                <span class="tag">{{ tag.label }}</span>{% if not forloop.last %}, {% endif %}
+              {% endfor %}
+            </span>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No updates found matching your search.</p>
+  {% endif %}
+{% else %}
+  <p>Enter a search term to find updates.</p>
+{% endif %}

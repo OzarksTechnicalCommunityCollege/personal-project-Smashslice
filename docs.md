@@ -1,3 +1,14 @@
+# Refactor — Dynamic Search
+5/11/26
+
+Added dynamic search across updates. Implemented as a standard Django view
+with a `q` GET parameter and `Q` object filtering on title, body, and tag
+label. No DRF endpoint — the JS calls the view URL directly and swaps the
+results into the DOM without a page reload.
+
+Search form and results area added to the update list page. Results are
+distinct to avoid duplicates from the tag M2M join.
+
 # Refactor — Admin Exports & Commit-Count Chart
 5/11/26
 

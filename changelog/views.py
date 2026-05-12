@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 from .models import Update, ChangeRequest, GitHubCommit
 from django.http import Http404
@@ -6,10 +7,6 @@ from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from .forms import ChangeRequestForm
 from .session_tracker import ChangeRequestTracker
-
-
-
-
 # Post Views
 
 
@@ -251,3 +248,18 @@ def github_commit_list(request):
     """
     commits = GitHubCommit.objects.order_by('-date')[:50]
     return render(request, 'changelog/commits.html', {'commits': commits})
+
+# Search updates by title, body, or tag label
+def update_search(request):
+    query = request.GET.get('q', '').strip()
+    results = []
+    if query:
+        results = (
+            Update.published.filter(
+                Q(title__icontains=query) |
+                Q(body__icontains=query) |
+                Q(tags__label__icontains=query)
+            )
+            .distinct()
+        )
+    return render(request, 'changelog/post/search_results.html', {'results': results, 'query': query})

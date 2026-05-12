@@ -30,6 +30,7 @@ urlpatterns = [
     ),
     path('commits/', views.github_commit_list, name='github_commit_list'),
     path('api/commit-counts/', CommitCountChartView.as_view(), name='commit_count_chart_api'),
+    path('search/', views.update_search, name='update_search'),
 ]
 
 # Add DRF API routes

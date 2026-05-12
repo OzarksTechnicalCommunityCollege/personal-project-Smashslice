@@ -3,6 +3,14 @@
 {% block content %}
 
 <div class="page-container">
+  <!-- Search Section -->
+  <section class="search-section">
+    <form id="update-search-form" method="get" action="{% url 'changelog:update_search' %}">
+      <input type="text" name="q" id="update-search-input" placeholder="Search updates..." autocomplete="off">
+      <button type="submit">Search</button>
+    </form>
+    <div id="update-search-results"></div>
+  </section>
   <!-- Changelog Section -->
   <section class="changelog-section">
     <div class="section-header changelog-header">
@@ -33,6 +41,25 @@
     
     <!-- {% include 'changelog/includes/_updates_placeholder.html' %} -->
     {% include 'includes/_pagination.html' with page=updates %}
+
+  <script>
+    const form = document.getElementById('update-search-form');
+    const input = document.getElementById('update-search-input');
+    const resultsDiv = document.getElementById('update-search-results');
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const q = input.value.trim();
+      if (!q) {
+        resultsDiv.innerHTML = '<p>Enter a search term to find updates.</p>';
+        return;
+      }
+      fetch(form.action + '?q=' + encodeURIComponent(q), {headers: {'X-Requested-With': 'XMLHttpRequest'}})
+        .then(response => response.text())
+        .then(html => {
+          resultsDiv.innerHTML = html;
+        });
+    });
+  </script>
   </section>
   
   <!-- Todo List Section -->
